@@ -1,0 +1,7 @@
+{
+  "plugins": ["stylelint-prettier"],
+  "extends": ["stylelint-config-idiomatic-order", "stylelint-config-prettier"],
+  "rules": {
+    "prettier/prettier": true
+  }
+}

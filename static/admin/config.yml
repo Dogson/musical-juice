@@ -1,0 +1,326 @@
+backend:
+  name: github
+  repo: CampusFS/site-CFS
+
+media_folder: static/assets/images
+public_folder: assets/images
+logo_url: https://www.campusfrancosenegalais.org/assets/images/logoCFS.png
+site_url: https://www.campusfrancosenegalais.org/
+display_url: https://www.campusfrancosenegalais.org/
+
+slug:
+  encoding: ascii
+  clean_accents: true
+
+collections:
+  #  FORMATIONS
+  - name: formations
+    label: Formations
+    editor:
+      preview: false
+    folder: src/content/formations
+    create: true
+    slug: "{{name}}"
+    identifier_field: name
+    fields:
+      - { name: "type", widget: "hidden", label: "Type", default: "formations" }
+      - { name: name, label: Nom de la formation }
+      - { name: fieldType, label: Domaine d'étude, widget: select, options: ["Agronomie et agriculture", "Numérique et mathématiques", "Ingénierie, développement durable et autres secteurs"]}
+      - { name: studyLevel, label: Niveau d'étude, widget: select, options: ["Bac+3", "Bac+5", "Autres"] }
+      - { name: year, label: Année de la formation, widget: date, dateFormat: "YYYY", format: "YYYY", required: false }
+      - { name: buildPage, widget: boolean, label: Construire la page de formation, hint: 'Rend la formation cliquable, et construis une page propre à cette formation.', default: true, required: false }
+      - { name: hideFormation, widget: boolean, label: Cacher la formation, hint: "La formation n'apparaîtra pas dans la listes des formations du CFS", default: false, required: false }
+      - { name: highlightImportant, widget: boolean, label: Mise en avant importante, hint: "La formation sera mise en avant sur la liste avec le coutour en gras et le message 'Places disponibles'. Elle apparaitra dans la section 'Formations à ne pas manquer'", default: false, required: false }
+      - { name: highlight, widget: boolean, label: Mise en avant, hint: "La formation sera mise en avant sur la liste avec le message 'Places disponibles'", default: false, required: false }
+      - label: "Établissements porteurs"
+        name: "schools"
+        widget: "list"
+        fields:
+          - {label: Nom de l'établissement, name: name, widget: string}
+          - {label: Logo de l'établissement, name: logo, widget: image}
+          - {label: Site internet de l'établissement, name: url, widget: string}
+      - { name: grade, label: Grade, required: false }
+      - { name: nature, label: Nature du diplôme délivré, required: false }
+      - { name: formationType, label: Type de formation, required: false }
+      - { name: exitLevel, label: Niveau de sortie RNCP (si applicable), required: false }
+      - { name: admissionCondition, label: Conditions d'admission, required: false }
+      - { name: formationPlace, label: Lieu de formation, required: false }
+      - { name: startDate, label: Date de démarrage, required: false }
+      - { name: applicationDate, label: Date limite de candidature, required: false }
+      - { name: duration, label: Durée, widget: string, required: false }
+      - { name: price, label: Tarif par année, required: false }
+      - { name: field, label: Domaine, required: false }
+      - { name: admissionArrangements, label: Modalités d'admission, required: false }
+      - label: "Section vidéo"
+        name: "videoSection"
+        widget: "object"
+        fields:
+          - name: "show"
+            label: "Afficher la section vidéo"
+            widget: boolean
+            required: false
+          - name: "sectionName"
+            label: "Nom de la section"
+            default: "Vidéos"
+            required: false
+          - name: "videos"
+            widget: "list"
+            label: "Liens des vidéos"
+            required: false
+            fields:
+              - label: "Lien de la vidéo"
+                name: "url"
+                widget: "string"
+                required: true
+                hint: "L'URL doit-être un lien YouTube"
+      - { name: objectives, label: Objectifs de la formation, widget: markdown, required: false }
+      - { name: description, label: Présentation, widget: markdown, required: false }
+      - { name: opportunities, label: Débouchés, widget: markdown, required: false }
+      - { name: sector, label: Secteurs d'activité, widget: markdown, required: false }
+      - { name: partners, label: Partenaires, widget: markdown, required: false }
+      - name: contact
+        label: Contact
+        widget: list
+        required: false
+        fields:
+          - {label: Nom de du contact, name: name, widget: string, required: false}
+          - {label: Adresse e-mail du contact, name: email, widget: string, required: false}
+          - {label: Numéro de téléphone du contact, name: phone, widget: string, required: false}
+      - name: links
+        label: Liens externes
+        widget: list
+        required: false
+        fields:
+          - { name: text, label: Texte du lien, hint: "Texte sur lequel l'utilisateur cliquera pour ouvrir le lien. Si vide, l'URL sera affichée.", default: "Page web de la formation", required: false }
+          - { name: url, label: URL, required: true }
+      - { name: effective, label: Effectif prévisionnel, required: false }
+      - name: files
+        label: Fichiers
+        widget: list
+        required: false
+        fields:
+          - { name: name, label: Nom du fichier, hint: "Exemples : Dossier d'inscription / Plaquette d'information...", widget: string }
+          - { name: file, label: Fichier, widget: file }
+
+  #  Etablissements partenaires
+  - name: schools
+    editor:
+      preview: false
+    label: "Etablissements partenaires"
+    folder: src/content/schools
+    create: true
+    slug: "{{name}}"
+    identifier_field: name
+    fields:
+      - { name: "type", widget: "hidden", label: "Type", default: "schools" }
+      - { name: "name", label: Nom de l'établissement }
+      - { name: "url", label: Site internet de l'établissement }
+      - { name: "image", label: Logo de l'établissement, widget: image }
+
+  # Pages
+  - label: Pages
+    name: pages
+    editor:
+      preview: false
+    files:
+      #Page d'accueil : encadré descriptif du CFS
+      - label: Page d'accueil du CFS
+        description: "Contenu de la page d'accueil du site."
+        name: homepageCFS
+        file: src/content/pages/homepageCFS.md
+        fields:
+          - { name: "type", widget: "hidden", label: "Type", default: "homepageCFS" }
+          - { name: headerImage, label: Image d'accueil, widget: image, required: true }
+          - { name: pageTitle,
+              label: "Titre de la page",
+              hint: "Mettre entre double asterisques la partie du titre à mettre en gras. Ex : **Texte à mettre en gras**"
+          }
+          - { name: subtitle,
+              label: "Sous-titre de la page"
+          }
+          - {
+            name: alert,
+            label: "Afficher pop-up",
+            widget: boolean,
+            hint: "Une pop-up sera affichée sur l'écran d'accueil. Voir les champs ci-dessous pour le contenu de la pop-up."
+          }
+          - { name: alertText,
+              label: "Texte de la pop-up"
+          }
+          - { name: alertImage,
+              widget: image,
+              label: "Image de la pop-up",
+              hint: "L'image apparaîtra au dessus du texte. Merci de respecter les dimensions suivantes: 700*200 pour des raisons de mises en forme."
+          }
+          - {
+            name: alertLink,
+            label: "Lien de la pop-up",
+            hint: "Le lien présent dans la popup. Peut être un lien externe ou interne au site"
+          }
+          - {
+            name: alertLinkText,
+            label: "Texte du lien de la pop-up",
+            hint: "Si un lien est défini, le texte par défaut est \"Accéder à la formation\""
+          }
+          - { name: description1,
+              label: Premier paragraphe de description du CFS,
+              widget: markdown
+          }
+          - { name: description2,
+              label: Deuxième paragraphe de description du CFS (avec VAE),
+              widget: markdown
+          }
+          - { name: description3,
+                label: Troisième paragraphe de description du CFS,
+                widget: markdown
+          }
+          - { name: description4,
+              label: Quatrième paragraphe de description du CFS,
+              widget: markdown
+          }
+          - { name: descriptionImage1, label: Première image du paragraphe de description, widget: image }
+          - { name: descriptionImage3, label: Deuxième image du paragraphe de description, widget: image }
+          - { name: descriptionImage4, label: Troisième image du paragraphe de description, widget: image }
+          - {
+            name: schoolPartners,
+            label: Établissement partenaires,
+            widget: number,
+            default: 0,
+            min: 0,
+            valueType: int,
+            hint: "Indiquer '0' si vous ne souhaitez pas afficher cette statistique."
+          }
+          - {
+            name: formationsNumber,
+            label: Nombre de formations,
+            widget: number,
+            default: 0,
+            min: 0,
+            valueType: int,
+            hint: "Indiquer '0' si vous ne souhaitez pas afficher cette statistique."
+          }
+          - {
+            name: studentsNumber,
+            label:  Places disponibles,
+            widget: number,
+            default: 0,
+            min: 0,
+            valueType: int,
+            hint: "Indiquer '0' si vous ne souhaitez pas afficher cette statistique."
+          }
+          - {
+            name: showVideo,
+            widget: boolean,
+            label: Afficher la vidéo de présentation,
+            default: true,
+            required: false
+          }
+          - {
+            name: showPoll,
+            label: Afficher le sondage,
+            widget: boolean,
+            default: true,
+            required: false
+          }
+          - {
+            name: showContact,
+            label: Afficher le formulaire de contact,
+            widget: boolean,
+            default: true,
+            required: false
+          }
+      - label: Appel à projets
+        description: "Contenu de la page d'Appel à projets"
+        name: callForProjectsPage
+        file: src/content/pages/callForProjectsPage.md
+        fields:
+          - { name: "type", widget: "hidden", label: "Type", default: "callForProjectsPage" }
+          - name: hidePage
+            widget: boolean
+            label: Ne pas afficher la page
+            hint: Cocher cette case pour ne pas afficher la page d'Appel à projets et les liens correspondant dans le menu
+            default: false
+            required: false
+          - { name: headerImage, label: Bannière de la page, widget: image, required: true }
+          - { name: pageTitle,
+              label: "Titre de la page",
+              hint: "Mettre entre double asterisques la partie du titre à mettre en gras. Ex : **Texte à mettre en gras**"
+          }
+          - { name: subtitle,
+              label: "Sous-titre de la page"
+          }
+          - { name: description,
+              label: Paragraphes de description de l'Appel à projets,
+              widget: markdown
+          }
+          - { name: body,
+              label: Texte détaillant le contexte, les objectifs et les modalités de candidature,
+              widget: markdown
+          }
+          - name: files
+            label: Fichiers
+            widget: list
+            required: true
+            fields:
+              - { name: name, label: Nom du fichier, widget: string }
+              - { name: file, label: Fichier, widget: file }
+      - label: Offres d'emploi
+        description: "Page d'offres d'emploi du CFS"
+        name: jobsPage
+        file: src/content/pages/jobsPage.md
+        fields:
+          - { name: "type", widget: "hidden", label: "Type", default: "jobs" }
+          - name: hidePage
+            widget: boolean
+            label: Ne pas afficher la page
+            hint: Cocher cette case pour ne pas afficher la page des offres d'emplois et les liens correspondant dans le menu
+            default: false
+            required: false
+          - { name: headerImage, label: Bannière de la page, widget: image, required: true }
+          - { name: pageTitle,
+              label: "Titre de la page",
+              hint: "Mettre entre double asterisques la partie du titre à mettre en gras. Ex : **Texte à mettre en gras**"
+          }
+          - { name: subtitle,
+              label: "Sous-titre de la page"
+          }
+          - name: jobs
+            label: Offres d'emplois
+            widget: list
+            required: true
+            fields:
+              - { name: name, label: Intitulé du poste, widget: string, required: true }
+              - { name: dueDate, label: Date limite de candidature, widget: string }
+              - { name: body, label: Description du poste, widget: markdown, requiired: true }
+              - name: files
+                label: Fichiers
+                widget: list
+                required: true
+                fields:
+                  - { name: name, label: Nom du fichier, widget: string }
+                  - { name: file, label: Fichier, widget: file }
+      #Mentions Légales
+      - label: Mentions légales du site internet
+        description: "Contenu de la page des mentions légales"
+        name: mentionsLegales
+        file: src/content/pages/mentionsLegales.md
+        fields:
+          - { name: "type", widget: "hidden", label: "Type", default: "mentionsLegalesPage" }
+          - { name: "name", widget: string, label: "Prénom et nom du propriétaire du site ou raison sociale de l'organisation" }
+          - { name: "address", widget: "text", label: "Adresse postale du propriétaire ou du siègle sociale si personne morale" }
+          - { name: "legalForm", label: "Forme juridique de l'organisation", hint: "Ne pas remplir si le propriétaire est une personne physique.", required: false }
+          - { name: "capital", label: "Montant du capital social", hint: "Ne pas remplir si le propriétaire est une personne morale.", required: false }
+          - { name: "publisherName", label: "Prénom, nom et poste du responsable de la publication" }
+          - label: "Hébergeur"
+            name: "host"
+            widget: "object"
+            fields:
+              - { name: "name", label: "Nom de l'hébergeur"}
+              - { name: "address", widget: text, label: "Adresse physique de l'hebergeur" }
+              - { name: "website", label: "Site internet de l'hebergeur"}
+          - label: "Concepteur du site"
+            name: "designer"
+            widget: "object"
+            fields:
+              - { name: "name", label: "Nom"}
+              - { name: "website", label: "Site internet"}

@@ -1,0 +1,52 @@
+//layout
+html {
+  //font weights :
+  --weight-light: 300;
+  --weight-regular: normal;
+  --weight-bold: 500;
+
+  //text size
+  --size-smaller: 12px;
+  --size-small: 15px;
+  --size-normal: 18px;
+  --size-big: 20px;
+  --size-bigger: 24px;
+
+  //media sizes
+  --media-tablet: 'screen and (max-width : 1020px)';
+  --media-phone: 'screen and (max-width : 700px)';
+
+  font-family: 'Roboto', sans-serif;
+  font-weight: var(--weight-regular);
+  font-size: var(--size-normal);
+  background-color: var(--background-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+}
+
+// Flexboxes
+@mixin flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+@mixin flex-row {
+  display: flex;
+  flex-direction: row;
+}
+
+@mixin flex-column-full-center {
+  @include flex-column;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flex-row-full-center {
+  @include flex-row;
+  align-items: center;
+  justify-content: center;
+}
