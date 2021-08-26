@@ -1,10 +1,11 @@
 import React from 'react';
 
+import YoutubeVideo from '../components/youtube-video/YoutubeVideo.component';
 import PageLayout from '../layout/Page.layout';
 
 const IndexPage: React.FC = () => (
   <PageLayout>
-    <div>coucou</div>
+    <YoutubeVideo />
   </PageLayout>
 );
 
