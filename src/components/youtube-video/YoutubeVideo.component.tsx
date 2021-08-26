@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import YouTube from 'react-youtube';
 
+import { initTvShader } from '../../utils/badTvShader';
 import {
-  getNextChapter,
-  getYoutubeChapters,
-} from '../../utils/getYoutubeChapters';
+  getCurrentSong,
+  getNextSong,
+  getYoutubeSongs,
+} from '../../utils/getYoutubeSongs';
 import * as styles from './YoutubeVideo.module.scss';
 
 const VIDEO_ID = '35rBGLpYVqc';
@@ -64,26 +66,41 @@ const VIDEO_DESCRIPTION =
   '2:43:24 - Last Surprise -Scramble- (Persona 5 Scramble)';
 
 const VideoTest: React.FC = () => {
-  const [player, setPlayer] = useState<YT.Player>();
+  const songs = getYoutubeSongs(VIDEO_DESCRIPTION);
 
-  const chapters = getYoutubeChapters(VIDEO_DESCRIPTION);
+  const [player, setPlayer] = useState<YT.Player>();
+  const [songTitle, setSongTitle] = useState(songs[0].title);
+  const [mixTitle, setMixTitle] = useState(songs[0].title);
+  const checkSongNameInterval = useRef<number | null>(null);
 
   const handleReady = (e: YT.PlayerEvent) => {
+    initTvShader(styles.YoutubeVideo_videoContainer);
     setPlayer(e.target);
     e.target.seekTo(0, true);
     e.target.playVideo();
+    setMixTitle((e.target as unknown as any).playerInfo.videoData.title);
   };
 
   const handlePlay = () => {
-    // TODO put background noises
+    if (checkSongNameInterval.current || !player) return;
+    checkSongNameInterval.current = window.setInterval(() => {
+      const currentSong = getCurrentSong(songs, player.getCurrentTime()).title;
+      if (currentSong !== songTitle) {
+        setSongTitle(currentSong);
+      }
+    }, 1000);
   };
 
   const handlePause = () => {
-    // TODO remove background noises
+    if (!checkSongNameInterval.current) return;
+    clearInterval(checkSongNameInterval.current);
+    checkSongNameInterval.current = null;
   };
 
   const handleEnd = () => {
-    // TODO Goto next mix
+    if (!checkSongNameInterval.current) return;
+    clearInterval(checkSongNameInterval.current);
+    checkSongNameInterval.current = null;
   };
 
   const handleError = () => {
@@ -92,10 +109,11 @@ const VideoTest: React.FC = () => {
 
   const handleNextSong = () => {
     if (!player) return;
-    const nextChapter = getNextChapter(chapters, player.getCurrentTime());
-    if (nextChapter) {
+    const nextSong = getNextSong(songs, player.getCurrentTime());
+    if (nextSong) {
       player.playVideo();
-      player.seekTo(nextChapter.start, true);
+      player.seekTo(nextSong.start, true);
+      setSongTitle(nextSong.title);
     } else {
       // TODO launch next mix
     }
@@ -104,6 +122,8 @@ const VideoTest: React.FC = () => {
   return (
     <div className={styles.YoutubeVideo}>
       <div className={styles.YoutubeVideo_interactiveLayer}>
+        <h1>{mixTitle}</h1>
+        <h2>{songTitle}</h2>
         <button type="button" onClick={handleNextSong}>
           Chanson suivante !
         </button>
@@ -112,6 +132,7 @@ const VideoTest: React.FC = () => {
         <YouTube
           videoId={VIDEO_ID}
           className={styles.YoutubeVideo_video}
+          containerClassName={styles.YoutubeVideo_videoWrapper}
           opts={{
             playerVars: {
               disablekb: 1,

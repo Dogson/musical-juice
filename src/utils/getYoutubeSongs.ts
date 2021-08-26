@@ -1,8 +1,8 @@
-import { IYoutubeChapter } from '../typings/youtubeChapters.types';
+import { IYoutubeSong } from '../typings/youtubeSongs.types';
 
 const specialChars = ' <>@!#$%^&*()_+[]{}?:;|\'"\\,./~`-=';
 
-const makeChapterParser = (
+const makeSongParser = (
   startRx: RegExp,
   lineRx: RegExp,
   timestampIndex: number,
@@ -13,16 +13,16 @@ const makeChapterParser = (
   textIndex += 1;
 
   return (description: string) => {
-    const chapters: IYoutubeChapter[] = [];
+    const songs: IYoutubeSong[] = [];
 
     const firstTimestamp = description.search(startRx);
     if (firstTimestamp === -1) {
-      return chapters;
+      return songs;
     }
 
-    const chapterLines = description.slice(firstTimestamp).split('\n');
-    for (let i = 0; i < chapterLines.length; i += 1) {
-      const line = chapterLines[i];
+    const songLines = description.slice(firstTimestamp).split('\n');
+    for (let i = 0; i < songLines.length; i += 1) {
+      const line = songLines[i];
 
       const match = lineRx.exec(line);
       if (!match) {
@@ -47,13 +47,13 @@ const makeChapterParser = (
       });
       title = title.substr(substrIdx);
 
-      chapters.push({
+      songs.push({
         start: hours * 60 * 60 + minutes * 60 + seconds,
         title: title.trim(),
       });
     }
 
-    return chapters;
+    return songs;
   };
 };
 
@@ -65,7 +65,7 @@ const addM = (regex: RegExp) => {
 };
 
 // $timestamp $title
-const lawfulParser = makeChapterParser(
+const lawfulParser = makeSongParser(
   /^0:00/m,
   /^(?:(\d+):)?(\d+):(\d+)\s+(.*?)$/,
   0,
@@ -73,10 +73,10 @@ const lawfulParser = makeChapterParser(
 );
 // ($track_id. )$title $timestamp
 const postfixRx = /^(?:\d+\.\s+)?(.*)\s+(?:(\d+):)?(\d+):(\d+)$/;
-const postfixParser = makeChapterParser(addM(postfixRx), postfixRx, 1, 0);
+const postfixParser = makeSongParser(addM(postfixRx), postfixRx, 1, 0);
 // ($track_id. )$title ($timestamp)
 const postfixParenRx = /^(?:\d+\.\s+)?(.*)\s+\(\s*(?:(\d+):)?(\d+):(\d+)\s*\)$/;
-const postfixParenParser = makeChapterParser(
+const postfixParenParser = makeSongParser(
   addM(postfixParenRx),
   postfixParenRx,
   1,
@@ -84,25 +84,39 @@ const postfixParenParser = makeChapterParser(
 );
 // $track_id. $timestamp $title
 const prefixRx = /^\d+\.\s+(?:(\d+):)?(\d+):(\d+)\s+(.*)$/;
-const prefixParser = makeChapterParser(addM(prefixRx), prefixRx, 0, 3);
+const prefixParser = makeSongParser(addM(prefixRx), prefixRx, 0, 3);
 
-const getYoutubeChapters = (
+const getYoutubeSongs = (
   description: string,
   extended?: boolean,
-): IYoutubeChapter[] => {
-  let chapters = lawfulParser(description);
-  if (chapters.length === 0) chapters = postfixParser(description);
-  if (chapters.length === 0) chapters = postfixParenParser(description);
+): IYoutubeSong[] => {
+  let songs = lawfulParser(description);
+  if (songs.length === 0) songs = postfixParser(description);
+  if (songs.length === 0) songs = postfixParenParser(description);
   // YouTube doesn't support prefix parsing
-  if (chapters.length === 0 && extended) chapters = prefixParser(description);
+  if (songs.length === 0 && extended) songs = prefixParser(description);
 
-  return chapters;
+  return songs;
 };
 
-const getNextChapter = (
-  chapters: IYoutubeChapter[],
+const getNextSong = (
+  songs: IYoutubeSong[],
   currentTimestamp: number,
-): IYoutubeChapter | undefined =>
-  chapters.find((chapter) => chapter.start > currentTimestamp);
+): IYoutubeSong | undefined =>
+  songs.find((song) => song.start > currentTimestamp);
 
-export { getYoutubeChapters, getNextChapter };
+const getNextSongIdx = (
+  songs: IYoutubeSong[],
+  currentTimestamp: number,
+): number => songs.findIndex((song) => song.start > currentTimestamp);
+
+const getCurrentSong = (
+  songs: IYoutubeSong[],
+  currentTimeStamp: number,
+): IYoutubeSong => {
+  const nextSongIdx = getNextSongIdx(songs, currentTimeStamp);
+  if (nextSongIdx === -1) return songs[songs.length - 1];
+  return songs[nextSongIdx - 1];
+};
+
+export { getYoutubeSongs, getNextSong, getCurrentSong };
