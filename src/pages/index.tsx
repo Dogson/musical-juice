@@ -1,50 +1,36 @@
-import React, { useEffect } from 'react';
+import React, { useState } from 'react';
 
-import YoutubeVideo from '../components/youtube-video/YoutubeVideo.component';
+import AppContainer from '../containers/App.container';
 import { AppProvider } from '../context/AppContext';
-import useAppContextManager from '../hooks/useAppContextManager';
-import PageLayout from '../layout/page/Page.layout';
+import { IMix } from '../typings/Mixes.types';
 
 const IndexPage: React.FC = () => {
-  const {
-    loadData,
-    mixes,
-    moods,
-    atmospheres,
-    changeAtmosphere,
-    nextMix,
-    changeMood,
-    currentAtmosphere,
-    currentMix,
-    currentMood,
-  } = useAppContextManager();
-
-  useEffect(() => {
-    loadData();
-  }, [loadData]);
+  const [mixes, setMixes] = useState<IMix[]>([]);
+  const [currentMix, setCurrentMix] = useState<IMix>();
+  const [moods, setMoods] = useState<string[]>([]);
+  const [currentMood, setCurrentMood] = useState<string>();
+  const [atmospheres, setAtmospheres] = useState<string[]>([]);
+  const [currentAtmosphere, setCurrentAtmosphere] = useState<string>();
 
   return (
-    <PageLayout>
-      {mixes.length === 0 ? (
-        <div>LOADING</div>
-      ) : (
-        <AppProvider
-          value={{
-            mixes,
-            moods,
-            atmospheres,
-            nextMix,
-            changeMood,
-            changeAtmosphere,
-            currentMood,
-            currentAtmosphere,
-            currentMix,
-          }}
-        >
-          <YoutubeVideo />
-        </AppProvider>
-      )}
-    </PageLayout>
+    <AppProvider
+      value={{
+        mixes,
+        currentMix,
+        setMixes,
+        setCurrentMix,
+        moods,
+        currentMood,
+        setMoods,
+        setCurrentMood,
+        atmospheres,
+        currentAtmosphere,
+        setAtmospheres,
+        setCurrentAtmosphere,
+      }}
+    >
+      <AppContainer />
+    </AppProvider>
   );
 };
 

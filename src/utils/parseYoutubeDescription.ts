@@ -1,8 +1,8 @@
-import { IYoutubeSong } from '../typings/youtubeSongs.types';
+import { ITrack } from '../typings/Tracks.types';
 
-const specialChars = ' <>@!#$%^&*()_+[]{}?:;|\'"\\,./~`-=';
+const specialChars = ' <>@!#$%^&*()_+[]{}?:;|\'"\\,./~`—-=';
 
-const makeSongParser = (
+const makeTrackParser = (
   startRx: RegExp,
   lineRx: RegExp,
   timestampIndex: number,
@@ -13,16 +13,16 @@ const makeSongParser = (
   textIndex += 1;
 
   return (description: string) => {
-    const songs: IYoutubeSong[] = [];
+    const tracks: ITrack[] = [];
 
     const firstTimestamp = description.search(startRx);
     if (firstTimestamp === -1) {
-      return songs;
+      return tracks;
     }
 
-    const songLines = description.slice(firstTimestamp).split('\n');
-    for (let i = 0; i < songLines.length; i += 1) {
-      const line = songLines[i];
+    const trackLines = description.slice(firstTimestamp).split('\n');
+    for (let i = 0; i < trackLines.length; i += 1) {
+      const line = trackLines[i];
 
       const match = lineRx.exec(line);
       if (!match) {
@@ -47,13 +47,23 @@ const makeSongParser = (
       });
       title = title.substr(substrIdx);
 
-      songs.push({
+      const splitted = title.split('');
+      // eslint-disable-next-line for-direction
+      for (let j = splitted.length - 1; j >= 0; j -= 1) {
+        substrIdx = j + 1;
+        if (specialChars.indexOf(splitted[j]) === -1) {
+          break;
+        }
+      }
+      title = title.substr(0, substrIdx);
+
+      tracks.push({
         start: hours * 60 * 60 + minutes * 60 + seconds,
         title: title.trim(),
       });
     }
 
-    return songs;
+    return tracks;
   };
 };
 
@@ -65,7 +75,7 @@ const addM = (regex: RegExp) => {
 };
 
 // $timestamp $title
-const lawfulParser = makeSongParser(
+const lawfulParser = makeTrackParser(
   /^0:00/m,
   /^(?:(\d+):)?(\d+):(\d+)\s+(.*?)$/,
   0,
@@ -73,10 +83,10 @@ const lawfulParser = makeSongParser(
 );
 // ($track_id. )$title $timestamp
 const postfixRx = /^(?:\d+\.\s+)?(.*)\s+(?:(\d+):)?(\d+):(\d+)$/;
-const postfixParser = makeSongParser(addM(postfixRx), postfixRx, 1, 0);
+const postfixParser = makeTrackParser(addM(postfixRx), postfixRx, 1, 0);
 // ($track_id. )$title ($timestamp)
 const postfixParenRx = /^(?:\d+\.\s+)?(.*)\s+\(\s*(?:(\d+):)?(\d+):(\d+)\s*\)$/;
-const postfixParenParser = makeSongParser(
+const postfixParenParser = makeTrackParser(
   addM(postfixParenRx),
   postfixParenRx,
   1,
@@ -84,39 +94,19 @@ const postfixParenParser = makeSongParser(
 );
 // $track_id. $timestamp $title
 const prefixRx = /^\d+\.\s+(?:(\d+):)?(\d+):(\d+)\s+(.*)$/;
-const prefixParser = makeSongParser(addM(prefixRx), prefixRx, 0, 3);
+const prefixParser = makeTrackParser(addM(prefixRx), prefixRx, 0, 3);
 
-const getYoutubeSongs = (
+const parseYoutubeDescription = (
   description: string,
   extended?: boolean,
-): IYoutubeSong[] => {
-  let songs = lawfulParser(description);
-  if (songs.length === 0) songs = postfixParser(description);
-  if (songs.length === 0) songs = postfixParenParser(description);
+): ITrack[] => {
+  let tracks = lawfulParser(description);
+  if (tracks.length === 0) tracks = postfixParser(description);
+  if (tracks.length === 0) tracks = postfixParenParser(description);
   // YouTube doesn't support prefix parsing
-  if (songs.length === 0 && extended) songs = prefixParser(description);
+  if (tracks.length === 0 && extended) tracks = prefixParser(description);
 
-  return songs;
+  return tracks;
 };
 
-const getNextSong = (
-  songs: IYoutubeSong[],
-  currentTimestamp: number,
-): IYoutubeSong | undefined =>
-  songs.find((song) => song.start > currentTimestamp);
-
-const getNextSongIdx = (
-  songs: IYoutubeSong[],
-  currentTimestamp: number,
-): number => songs.findIndex((song) => song.start > currentTimestamp);
-
-const getCurrentSong = (
-  songs: IYoutubeSong[],
-  currentTimeStamp: number,
-): IYoutubeSong => {
-  const nextSongIdx = getNextSongIdx(songs, currentTimeStamp);
-  if (nextSongIdx === -1) return songs[songs.length - 1];
-  return songs[nextSongIdx - 1];
-};
-
-export { getYoutubeSongs, getNextSong, getCurrentSong };
+export default parseYoutubeDescription;

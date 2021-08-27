@@ -8,7 +8,6 @@ import THREE from '../three.min';
 
 THREE.EffectComposer = function (renderer, renderTarget) {
   this.renderer = renderer;
-  console.log(renderer);
   if (renderTarget === undefined) {
     const parameters = {
       minFilter: THREE.LinearFilter,

@@ -3,11 +3,14 @@ import { IMix } from '../typings/Mixes.types';
 export interface IAppContext {
   moods: string[];
   currentMood?: string;
+  setMoods: (moods: string[]) => void;
+  setCurrentMood: (mood: string) => void;
   atmospheres: string[];
   currentAtmosphere?: string;
+  setAtmospheres: (atmospheres: string[]) => void;
+  setCurrentAtmosphere: (atmosphere: string) => void;
   mixes: IMix[];
   currentMix?: IMix;
-  changeMood: (mood: string) => void;
-  nextMix: () => void;
-  changeAtmosphere: (atmosphere: string) => void;
+  setMixes: (mixes: IMix[]) => void;
+  setCurrentMix: (mix: IMix) => void;
 }

@@ -15,13 +15,13 @@ import '../libs/bad-tv-shader/lib/postprocessing/ShaderPass';
 // @ts-ignore
 import THREE from '../libs/bad-tv-shader/lib/three.min';
 
-const initTvShader = (containerClassName) => {
+const initTvShader = (containerClassName, backgroundVideo) => {
   let shaderTime = 0;
   const videoContainer = document.getElementsByClassName(containerClassName)[0];
   let video = document.createElement('video');
   video.loop = true;
   video.muted = true;
-  video.src = 'assets/persona.mp4';
+  video.src = backgroundVideo;
   video.play();
   // init video texture
   const videoTexture = new THREE.Texture(video);
@@ -32,12 +32,22 @@ const initTvShader = (containerClassName) => {
   });
 
   // init camera
-  const camera = new THREE.PerspectiveCamera(55, 1080 / 720, 20, 3000);
+  const camera = new THREE.PerspectiveCamera(
+    60,
+    window.innerWidth / window.innerHeight,
+    1,
+    1000,
+  );
   camera.position.z = 1000;
   const scene = new THREE.Scene();
 
   // Add video plane
-  const planeGeometry = new THREE.PlaneGeometry(1080, 720, 1, 1);
+  const planeGeometry = new THREE.PlaneGeometry(
+    window.innerWidth,
+    window.innerHeight,
+    1,
+    1,
+  );
   const plane = new THREE.Mesh(planeGeometry, videoMaterial);
   scene.add(plane);
   plane.z = 0;
@@ -46,8 +56,7 @@ const initTvShader = (containerClassName) => {
 
   // init renderer
   const renderer = new THREE.WebGLRenderer();
-  renderer.setSize(800, 600);
-  console.log(videoContainer);
+  renderer.setSize(1280, 720);
   videoContainer.prepend(renderer.domElement);
 
   const renderPass = new THREE.RenderPass(scene, camera);

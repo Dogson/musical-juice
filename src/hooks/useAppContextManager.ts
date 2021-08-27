@@ -1,20 +1,29 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 
 import appData from '../../static/mocks/data.json';
+import AppContext from '../context/AppContext';
 import { IMix } from '../typings/Mixes.types';
+import parseYoutubeDescription from '../utils/parseYoutubeDescription';
 import { IUseAppContextManager } from './useAppContextManager.types';
 
 const useAppContextManager = (): IUseAppContextManager => {
-  const [moods, setMoods] = useState<string[]>([]);
-  const [atmospheres, setAtmospheres] = useState<string[]>([]);
-  const [mixes, setMixes] = useState<IMix[]>([]);
-
-  const [currentMood, setCurrentMood] = useState<string>();
-  const [currentAtmosphere, setCurrentAtmosphere] = useState<string>();
-  const [currentMix, setCurrentMix] = useState<IMix>();
-
   const [mixPlaylist, setMixPlaylist] = useState<IMix[]>();
   const [mixIdx, setMixIdx] = useState<number>();
+
+  const {
+    mixes,
+    setAtmospheres,
+    currentAtmosphere,
+    atmospheres,
+    setCurrentMood,
+    setMoods,
+    currentMood,
+    setCurrentMix,
+    setMixes,
+    currentMix,
+    moods,
+    setCurrentAtmosphere,
+  } = useContext(AppContext);
 
   /**
    * shuffle an array of mixes
@@ -23,9 +32,7 @@ const useAppContextManager = (): IUseAppContextManager => {
     let currentIndex = array.length;
     let randomIndex;
 
-    // While there remain elements to shuffle...
     while (currentIndex !== 0) {
-      // Pick a remaining element...
       randomIndex = Math.floor(Math.random() * currentIndex);
       currentIndex -= 1;
 
@@ -42,46 +49,61 @@ const useAppContextManager = (): IUseAppContextManager => {
   /**
    * Load app data (mixes, atmospheres and moods) with gatsby GraphQL queries
    */
-  const loadData = async () => {
+  const loadData = useCallback(() => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    setMixes(appData.mixes);
+    setMixes(
+      appData.mixes.map((mix: IMix) => ({
+        ...mix,
+        tracks: parseYoutubeDescription(mix.description, false),
+      })),
+    );
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     setMoods(appData.moods);
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     setAtmospheres(appData.atmospheres);
-  };
+
+    setCurrentMood('epic');
+  }, [setAtmospheres, setCurrentMood, setMixes, setMoods]);
 
   /**
    * Go to the next mix in the playlist
    */
-  const nextMix = () => {
+  const nextMix = useCallback(() => {
     if (!currentMood || !mixPlaylist || mixIdx === undefined) return;
     setMixIdx((v) => (v as number) + 1);
-  };
+  }, [currentMood, mixIdx, mixPlaylist]);
 
   /**
    * Change current mood
    */
-  const changeMood = (mood: string) => {
-    setCurrentMood(mood);
-  };
+  const changeMood = useCallback(
+    (mood: string) => {
+      setCurrentMood(mood);
+    },
+    [setCurrentMood],
+  );
 
   /**
    * Change current asmosphere
    */
-  const changeAtmosphere = (atmosphere: string) => {
-    setCurrentAtmosphere(atmosphere);
-  };
+  const changeAtmosphere = useCallback(
+    (atmosphere: string) => {
+      setCurrentAtmosphere(atmosphere);
+    },
+    [setCurrentAtmosphere],
+  );
 
   /**
    * Update mix when mixIdx changes
    */
   useEffect(() => {
-    if (mixIdx !== undefined && mixPlaylist) setCurrentMix(mixPlaylist[mixIdx]);
-  }, [mixIdx, mixPlaylist]);
+    if (mixIdx !== undefined && mixPlaylist) {
+      setCurrentMix(mixPlaylist[mixIdx]);
+    }
+  }, [mixIdx, mixPlaylist, setCurrentMix]);
 
   /**
    * Update mixPlaylist and mixIdx when mood changes
