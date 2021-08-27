@@ -73,10 +73,10 @@ const initTvShader = (containerClassName) => {
   const badTVParams = {
     mute: true,
     show: true,
-    distortion: 3.0,
-    distortion2: 1.0,
+    distortion: 1.0,
+    distortion2: 0.6,
     speed: 0.3,
-    rollSpeed: 0.1,
+    rollSpeed: 0,
   };
 
   const staticParams = {
