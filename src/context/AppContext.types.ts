@@ -13,4 +13,8 @@ export interface IAppContext {
   currentMix?: IMix;
   setMixes: (mixes: IMix[]) => void;
   setCurrentMix: (mix: IMix) => void;
+  mixPlaylist: IMix[];
+  setMixPlaylist: (mixes: IMix[]) => void;
+  mixIdx?: number;
+  setMixIdx: (idx: number) => void;
 }

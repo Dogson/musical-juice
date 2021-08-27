@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect } from 'react';
 
 import appData from '../../static/mocks/data.json';
 import AppContext from '../context/AppContext';
@@ -7,11 +7,10 @@ import parseYoutubeDescription from '../utils/parseYoutubeDescription';
 import { IUseAppContextManager } from './useAppContextManager.types';
 
 const useAppContextManager = (): IUseAppContextManager => {
-  const [mixPlaylist, setMixPlaylist] = useState<IMix[]>();
-  const [mixIdx, setMixIdx] = useState<number>();
-
   const {
     mixes,
+    mixIdx,
+    setMixIdx,
     setAtmospheres,
     currentAtmosphere,
     atmospheres,
@@ -23,6 +22,8 @@ const useAppContextManager = (): IUseAppContextManager => {
     currentMix,
     moods,
     setCurrentAtmosphere,
+    mixPlaylist,
+    setMixPlaylist,
   } = useContext(AppContext);
 
   /**
@@ -64,7 +65,6 @@ const useAppContextManager = (): IUseAppContextManager => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     setAtmospheres(appData.atmospheres);
-
     setCurrentMood('epic');
   }, [setAtmospheres, setCurrentMood, setMixes, setMoods]);
 
@@ -72,9 +72,11 @@ const useAppContextManager = (): IUseAppContextManager => {
    * Go to the next mix in the playlist
    */
   const nextMix = useCallback(() => {
-    if (!currentMood || !mixPlaylist || mixIdx === undefined) return;
+    if (!currentMood || !mixPlaylist || mixIdx === undefined) {
+      return;
+    }
     setMixIdx((v) => (v as number) + 1);
-  }, [currentMood, mixIdx, mixPlaylist]);
+  }, [currentMood, mixIdx, mixPlaylist, setMixIdx]);
 
   /**
    * Change current mood
@@ -109,10 +111,19 @@ const useAppContextManager = (): IUseAppContextManager => {
    * Update mixPlaylist and mixIdx when mood changes
    */
   useEffect(() => {
+    if (
+      !currentMood ||
+      (mixPlaylist &&
+        mixPlaylist.length > 0 &&
+        mixPlaylist[0].mood === currentMood)
+    ) {
+      return;
+    }
     const moodMixes = mixes.filter((mix) => mix.mood === currentMood);
-    setMixPlaylist(shuffleMix(moodMixes));
+    const randomPlaylist = shuffleMix(moodMixes);
+    setMixPlaylist(randomPlaylist);
     setMixIdx(0);
-  }, [currentMood, mixes]);
+  }, [currentMood, mixPlaylist, mixes, setMixIdx, setMixPlaylist]);
 
   return {
     moods,

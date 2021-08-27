@@ -6,6 +6,8 @@ import { IMix } from '../typings/Mixes.types';
 
 const IndexPage: React.FC = () => {
   const [mixes, setMixes] = useState<IMix[]>([]);
+  const [mixPlaylist, setMixPlaylist] = useState<IMix[]>([]);
+  const [mixIdx, setMixIdx] = useState<number>();
   const [currentMix, setCurrentMix] = useState<IMix>();
   const [moods, setMoods] = useState<string[]>([]);
   const [currentMood, setCurrentMood] = useState<string>();
@@ -15,10 +17,14 @@ const IndexPage: React.FC = () => {
   return (
     <AppProvider
       value={{
+        mixIdx,
+        setMixIdx,
         mixes,
         currentMix,
         setMixes,
         setCurrentMix,
+        mixPlaylist,
+        setMixPlaylist,
         moods,
         currentMood,
         setMoods,
