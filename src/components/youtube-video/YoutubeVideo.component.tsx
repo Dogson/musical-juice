@@ -1,22 +1,28 @@
 import React, { useEffect, useRef, useState } from 'react';
 import YouTube from 'react-youtube';
+import useSound from 'use-sound';
 
 import useAppContextManager from '../../hooks/useAppContextManager';
 import useTracksManager from '../../hooks/useTracksManager';
 import { ITrack } from '../../typings/Tracks.types';
 import { IWindow } from '../../typings/Window.types';
 import { initTvShader } from '../../utils/badTvShader';
+import Button from '../buttons/Button.component';
+import staticSound from './assets/static.wav';
 import * as styles from './YoutubeVideo.module.scss';
 
 const YoutubeVideo: React.FC = () => {
   const { currentMix, nextMix } = useAppContextManager();
+  const [playStaticSound, { stop: stopStaticSound }] = useSound(staticSound, {
+    volume: 0.3,
+  });
   const { track, nextTrack, checkTrackWithTimestamp } = useTracksManager(
     currentMix?.tracks as ITrack[],
   );
   const [mixTitle, setMixTitle] = useState('');
-
   const [player, setPlayer] = useState<YT.Player>();
-  const [paused, setPaused] = useState();
+  const [paused, setPaused] = useState<boolean>();
+  const [videoLoaded, setVideoLoaded] = useState<boolean>(false);
   const checkTrackNameInterval = useRef<number | null>(null);
   const eWindow: IWindow = window;
 
@@ -42,6 +48,7 @@ const YoutubeVideo: React.FC = () => {
     if (paused !== undefined) {
       window.dispatchEvent(eWindow.playVideo);
     } else {
+      setVideoLoaded(true);
       initTvShader(styles.YoutubeVideo_videoContainer, currentMix?.gifs[0]);
     }
   };
@@ -80,11 +87,18 @@ const YoutubeVideo: React.FC = () => {
       player.playVideo();
     }
   }, [paused, player]);
+
+  useEffect(() => {
+    if (!videoLoaded) playStaticSound();
+    else stopStaticSound();
+  }, [playStaticSound, stopStaticSound, videoLoaded]);
+
   /**
    * Preloading video + showing static when changing mix
    */
   useEffect(() => {
     setPaused(undefined);
+    setVideoLoaded(false);
     initTvShader(styles.YoutubeVideo_videoContainer, currentMix?.gifs[0]);
     initTvShader(styles.YoutubeVideo_videoContainer, null, true);
   }, [currentMix]);
@@ -94,15 +108,9 @@ const YoutubeVideo: React.FC = () => {
       <div className={styles.YoutubeVideo_interactiveLayer}>
         <h1>{mixTitle}</h1>
         <h2>{track?.title}</h2>
-        <button type="button" onClick={handleNextTrack}>
-          Chanson suivante !
-        </button>
-        <button type="button" onClick={nextMix}>
-          Mix suivant !
-        </button>
-        <button type="button" onClick={() => setPaused((v) => !v)}>
-          Pause
-        </button>
+        <Button onClick={handleNextTrack}>Chanson suivante !</Button>
+        <Button onClick={nextMix}>Mix suivant !</Button>
+        <Button onClick={() => setPaused(!paused)}>Pause</Button>
       </div>
       <div className={styles.YoutubeVideo_videoContainer}>
         <YouTube
