@@ -25,6 +25,8 @@ const initTvShader = (containerClassName, backgroundVideo, staticOnly) => {
     if (badTvShader) badTvShader.remove();
     window.removeEventListener('pauseVideo', window.onPause);
     window.removeEventListener('playVideo', window.onPlay);
+    window.removeEventListener('skipStart', window.onSkipStart);
+    window.removeEventListener('skipEnd', window.onSkipEnd);
   };
 
   removeShaders();
@@ -150,8 +152,9 @@ const initTvShader = (containerClassName, backgroundVideo, staticOnly) => {
     if (!video.paused) {
       shouldAnimate = false;
       video.pause();
-      badTVPass.uniforms['distortion'].value = 1.3;
-      badTVPass.uniforms['distortion2'].value = 0.8;
+      badTVPass.uniforms['distortion'].value = 1.7;
+      badTVPass.uniforms['distortion2'].value = 1;
+      staticPass.uniforms['amount'].value = 0.1;
     }
   };
   window.pauseVideo = new Event('pauseVideo');
@@ -164,10 +167,31 @@ const initTvShader = (containerClassName, backgroundVideo, staticOnly) => {
       });
       badTVPass.uniforms['distortion'].value = 0.6;
       badTVPass.uniforms['distortion2'].value = 0.4;
+      staticPass.uniforms['amount'].value = 0;
     }
   };
   window.playVideo = new Event('playVideo');
   window.addEventListener('playVideo', window.onPlay, false);
+
+  window.onSkipStart = () => {
+    console.log('SKIPSTART');
+    video.playbackRate = 2;
+    badTVPass.uniforms['distortion'].value = 3;
+    badTVPass.uniforms['distortion2'].value = 2;
+    staticPass.uniforms['amount'].value = 0.1;
+  };
+  window.skipStart = new Event('skipStart');
+  window.addEventListener('skipStart', window.onSkipStart, false);
+
+  window.onSkipEnd = () => {
+    console.log('SKIPEND');
+    video.playbackRate = 1;
+    badTVPass.uniforms['distortion'].value = 0.6;
+    badTVPass.uniforms['distortion2'].value = 0.4;
+    staticPass.uniforms['amount'].value = 0;
+  };
+  window.skipEnd = new Event('skipEnd');
+  window.addEventListener('skipEnd', window.onSkipEnd, false);
 
   onResize();
 
