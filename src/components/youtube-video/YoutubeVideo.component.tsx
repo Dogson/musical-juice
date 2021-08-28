@@ -12,6 +12,7 @@ import staticSound from './assets/static.wav';
 import * as styles from './YoutubeVideo.module.scss';
 
 const YoutubeVideo: React.FC = () => {
+  const isBrowser = typeof window !== 'undefined';
   const { currentMix, nextMix } = useAppContextManager();
   const [playStaticSound, { stop: stopStaticSound }] = useSound(staticSound, {
     volume: 0.3,
@@ -41,7 +42,7 @@ const YoutubeVideo: React.FC = () => {
    * Stop showing static to show the gif
    */
   const handlePlay = () => {
-    if (checkTrackNameInterval.current || !player) return;
+    if (checkTrackNameInterval.current || !player || !isBrowser) return;
     checkTrackNameInterval.current = window.setInterval(() => {
       checkTrackWithTimestamp(player.getCurrentTime());
     }, 1000);
@@ -54,6 +55,7 @@ const YoutubeVideo: React.FC = () => {
   };
 
   const handlePause = () => {
+    if (!isBrowser) return;
     if (!checkTrackNameInterval.current) return;
     clearInterval(checkTrackNameInterval.current);
     checkTrackNameInterval.current = null;

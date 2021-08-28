@@ -16,6 +16,10 @@ import '../libs/bad-tv-shader/lib/postprocessing/ShaderPass';
 import THREE from '../libs/bad-tv-shader/lib/three.min';
 
 const initTvShader = (containerClassName, backgroundVideo, staticOnly) => {
+  const isBrowser = typeof window !== 'undefined';
+
+  if (!isBrowser) return;
+
   const removeShaders = () => {
     const badTvShader = document.getElementById('bad-tv-shader');
     if (badTvShader) badTvShader.remove();
