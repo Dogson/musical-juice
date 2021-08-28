@@ -8,6 +8,7 @@ import { ITrack } from '../../typings/Tracks.types';
 import { IWindow } from '../../typings/Window.types';
 import { initTvShader } from '../../utils/badTvShader';
 import Button from '../buttons/Button.component';
+import fastFowardSound from './assets/fast-forward.wav';
 import staticSound from './assets/static.wav';
 import * as styles from './YoutubeVideo.module.scss';
 
@@ -16,13 +17,19 @@ const YoutubeVideo: React.FC = () => {
   const { currentMix, nextMix } = useAppContextManager();
   const [playStaticSound, { stop: stopStaticSound }] = useSound(staticSound, {
     volume: 0.3,
+    loop: true,
   });
+  const [playFastFowardSound, { stop: stopFastFowardSound }] = useSound(
+    fastFowardSound,
+    { loop: true },
+  );
   const { track, nextTrack, checkTrackWithTimestamp } = useTracksManager(
     currentMix?.tracks as ITrack[],
   );
   const [mixTitle, setMixTitle] = useState('');
   const [player, setPlayer] = useState<YT.Player>();
   const [paused, setPaused] = useState<boolean>();
+  const [skippingTrack, setSkippingTrack] = useState<boolean>();
   const [videoLoaded, setVideoLoaded] = useState<boolean>(false);
   const checkTrackNameInterval = useRef<number | null>(null);
   const eWindow: IWindow = window;
@@ -42,6 +49,9 @@ const YoutubeVideo: React.FC = () => {
    * Stop showing static to show the gif
    */
   const handlePlay = () => {
+    if (skippingTrack) {
+      setSkippingTrack(false);
+    }
     if (checkTrackNameInterval.current || !player || !isBrowser) return;
     checkTrackNameInterval.current = window.setInterval(() => {
       checkTrackWithTimestamp(player.getCurrentTime());
@@ -76,6 +86,7 @@ const YoutubeVideo: React.FC = () => {
     if (!player) return;
     const next = nextTrack();
     if (next) {
+      setSkippingTrack(true);
       player.playVideo();
       player.seekTo(next.start, true);
     }
@@ -94,6 +105,24 @@ const YoutubeVideo: React.FC = () => {
     if (!videoLoaded) playStaticSound();
     else stopStaticSound();
   }, [playStaticSound, stopStaticSound, videoLoaded]);
+
+  useEffect(() => {
+    if (skippingTrack !== undefined) {
+      if (skippingTrack) {
+        playFastFowardSound();
+        window.dispatchEvent(eWindow.skipStart);
+      } else {
+        stopFastFowardSound();
+        window.dispatchEvent(eWindow.skipEnd);
+      }
+    }
+  }, [
+    eWindow.skipEnd,
+    eWindow.skipStart,
+    playFastFowardSound,
+    skippingTrack,
+    stopFastFowardSound,
+  ]);
 
   /**
    * Preloading video + showing static when changing mix
