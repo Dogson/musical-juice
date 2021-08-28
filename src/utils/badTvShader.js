@@ -98,8 +98,8 @@ const initTvShader = (containerClassName, backgroundVideo, staticOnly) => {
   const badTVParams = {
     mute: true,
     show: true,
-    distortion: 1.0,
-    distortion2: 0.6,
+    distortion: 0.6,
+    distortion2: 0.4,
     speed: 0.3,
     rollSpeed: 0,
   };
@@ -150,6 +150,8 @@ const initTvShader = (containerClassName, backgroundVideo, staticOnly) => {
     if (!video.paused) {
       shouldAnimate = false;
       video.pause();
+      badTVPass.uniforms['distortion'].value = 1.3;
+      badTVPass.uniforms['distortion2'].value = 0.8;
     }
   };
   window.pauseVideo = new Event('pauseVideo');
@@ -160,6 +162,8 @@ const initTvShader = (containerClassName, backgroundVideo, staticOnly) => {
       video.play().then(() => {
         shouldAnimate = true;
       });
+      badTVPass.uniforms['distortion'].value = 0.6;
+      badTVPass.uniforms['distortion2'].value = 0.4;
     }
   };
   window.playVideo = new Event('playVideo');
