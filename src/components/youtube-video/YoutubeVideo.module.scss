@@ -1,0 +1,23 @@
+.YoutubeVideo {
+  width: 100%;
+  height: 100%;
+
+  &_interactiveLayer,
+  &_videoContainer,
+  &_videoWrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  &_interactiveLayer {
+    z-index: 1;
+  }
+
+  &_videoWrapper {
+    opacity: 0;
+    z-index: -1;
+  }
+}
