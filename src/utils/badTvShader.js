@@ -15,14 +15,25 @@ import '../libs/bad-tv-shader/lib/postprocessing/ShaderPass';
 // @ts-ignore
 import THREE from '../libs/bad-tv-shader/lib/three.min';
 
-const initTvShader = (containerClassName, backgroundVideo) => {
+const initTvShader = (containerClassName, backgroundVideo, staticOnly) => {
+  const removeShaders = () => {
+    const badTvShader = document.getElementById('bad-tv-shader');
+    if (badTvShader) badTvShader.remove();
+    window.removeEventListener('pauseVideo', window.onPause);
+    window.removeEventListener('playVideo', window.onPlay);
+  };
+
+  removeShaders();
+
   let shaderTime = 0;
   const videoContainer = document.getElementsByClassName(containerClassName)[0];
   let video = document.createElement('video');
   video.loop = true;
   video.muted = true;
-  video.src = backgroundVideo;
-  video.play();
+  if (backgroundVideo) {
+    video.src = backgroundVideo;
+    video.play();
+  }
   // init video texture
   const videoTexture = new THREE.Texture(video);
   videoTexture.minFilter = THREE.LinearFilter;
@@ -57,13 +68,14 @@ const initTvShader = (containerClassName, backgroundVideo) => {
   // init renderer
   const renderer = new THREE.WebGLRenderer();
   renderer.setSize(1280, 720);
+  renderer.domElement.id = 'bad-tv-shader';
   videoContainer.prepend(renderer.domElement);
 
   const renderPass = new THREE.RenderPass(scene, camera);
   const badTVPass = new THREE.ShaderPass(THREE.BadTVShader);
   const rgbPass = new THREE.ShaderPass(THREE.RGBShiftShader);
   const filmPass = new THREE.ShaderPass(THREE.FilmShader);
-  // const staticPass = new THREE.ShaderPass(THREE.StaticShader);
+  const staticPass = new THREE.ShaderPass(THREE.StaticShader);
   const copyPass = new THREE.ShaderPass(THREE.CopyShader);
 
   filmPass.uniforms.grayscale.value = 0;
@@ -73,7 +85,7 @@ const initTvShader = (containerClassName, backgroundVideo) => {
   composer.addPass(filmPass);
   composer.addPass(badTVPass);
   composer.addPass(rgbPass);
-  // composer.addPass(staticPass);
+  composer.addPass(staticPass);
   composer.addPass(copyPass);
   copyPass.renderToScreen = true;
   //set shader uniforms
@@ -89,9 +101,9 @@ const initTvShader = (containerClassName, backgroundVideo) => {
   };
 
   const staticParams = {
-    show: true,
-    amount: 0.5,
-    size: 4.0,
+    show: staticOnly,
+    amount: staticOnly ? 1 : 0,
+    size: 6.0,
   };
 
   const rgbParams = {
@@ -112,8 +124,8 @@ const initTvShader = (containerClassName, backgroundVideo) => {
   badTVPass.uniforms['speed'].value = badTVParams.speed;
   badTVPass.uniforms['rollSpeed'].value = badTVParams.rollSpeed;
 
-  // staticPass.uniforms['amount'].value = staticParams.amount;
-  // staticPass.uniforms['size'].value = staticParams.size;
+  staticPass.uniforms['amount'].value = staticParams.amount;
+  staticPass.uniforms['size'].value = staticParams.size;
 
   rgbPass.uniforms['angle'].value = rgbParams.angle * Math.PI;
   rgbPass.uniforms['amount'].value = rgbParams.amount;
@@ -128,6 +140,27 @@ const initTvShader = (containerClassName, backgroundVideo) => {
     camera.updateProjectionMatrix();
   };
 
+  let shouldAnimate = true;
+
+  window.onPause = () => {
+    if (!video.paused) {
+      shouldAnimate = false;
+      video.pause();
+    }
+  };
+  window.pauseVideo = new Event('pauseVideo');
+  window.addEventListener('pauseVideo', window.onPause, false);
+
+  window.onPlay = () => {
+    if (video.paused) {
+      video.play().then(() => {
+        shouldAnimate = true;
+      });
+    }
+  };
+  window.playVideo = new Event('playVideo');
+  window.addEventListener('playVideo', window.onPlay, false);
+
   onResize();
 
   window.addEventListener('resize', onResize, false);
@@ -136,8 +169,8 @@ const initTvShader = (containerClassName, backgroundVideo) => {
     shaderTime += 0.1;
     badTVPass.uniforms.time.value = shaderTime;
     filmPass.uniforms.time.value = shaderTime;
-    // staticPass.uniforms.time.value = shaderTime;
-    if (video.readyState === video.HAVE_ENOUGH_DATA) {
+    staticPass.uniforms.time.value = shaderTime;
+    if (video.readyState === video.HAVE_ENOUGH_DATA && shouldAnimate) {
       if (videoTexture) videoTexture.needsUpdate = true;
     }
 
@@ -148,6 +181,4 @@ const initTvShader = (containerClassName, backgroundVideo) => {
   animate();
 };
 
-const animateTvShader = () => {};
-
-export { initTvShader, animateTvShader };
+export { initTvShader };
