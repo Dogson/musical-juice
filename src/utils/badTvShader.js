@@ -174,7 +174,6 @@ const initTvShader = (containerClassName, backgroundVideo, staticOnly) => {
   window.addEventListener('playVideo', window.onPlay, false);
 
   window.onSkipStart = () => {
-    console.log('SKIPSTART');
     video.playbackRate = 2;
     badTVPass.uniforms['distortion'].value = 3;
     badTVPass.uniforms['distortion2'].value = 2;
@@ -184,7 +183,6 @@ const initTvShader = (containerClassName, backgroundVideo, staticOnly) => {
   window.addEventListener('skipStart', window.onSkipStart, false);
 
   window.onSkipEnd = () => {
-    console.log('SKIPEND');
     video.playbackRate = 1;
     badTVPass.uniforms['distortion'].value = 0.6;
     badTVPass.uniforms['distortion2'].value = 0.4;
