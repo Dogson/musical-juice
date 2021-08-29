@@ -31,6 +31,7 @@ const YoutubeVideo: React.FC = () => {
   const [paused, setPaused] = useState<boolean>();
   const [skippingTrack, setSkippingTrack] = useState<boolean>();
   const [videoLoaded, setVideoLoaded] = useState<boolean>(false);
+  const [manualInterval, setManualInterval] = useState(0);
   const checkTrackNameInterval = useRef<number | null>(null);
   const eWindow: IWindow = window;
 
@@ -54,7 +55,7 @@ const YoutubeVideo: React.FC = () => {
     }
     if (checkTrackNameInterval.current || !player || !isBrowser) return;
     checkTrackNameInterval.current = window.setInterval(() => {
-      checkTrackWithTimestamp(player.getCurrentTime());
+      setManualInterval((v) => v + 1);
     }, 1000);
     if (paused !== undefined) {
       window.dispatchEvent(eWindow.playVideo);
@@ -69,6 +70,7 @@ const YoutubeVideo: React.FC = () => {
     if (!checkTrackNameInterval.current) return;
     clearInterval(checkTrackNameInterval.current);
     checkTrackNameInterval.current = null;
+    setManualInterval(0);
     window.dispatchEvent(eWindow.pauseVideo);
   };
 
@@ -76,6 +78,8 @@ const YoutubeVideo: React.FC = () => {
     if (!checkTrackNameInterval.current) return;
     clearInterval(checkTrackNameInterval.current);
     checkTrackNameInterval.current = null;
+    setManualInterval(0);
+    nextMix();
   };
 
   const handleError = () => {
@@ -87,11 +91,29 @@ const YoutubeVideo: React.FC = () => {
     const next = nextTrack();
     if (next) {
       setSkippingTrack(true);
+      if (checkTrackNameInterval.current) {
+        clearInterval(checkTrackNameInterval.current);
+        checkTrackNameInterval.current = null;
+        setManualInterval(0);
+      }
       player.playVideo();
       player.seekTo(next.start, true);
     }
   };
 
+  /**
+   * Check timestamp when the manual interval is updated
+   * (necessary to get the correct state in the useTrackManager hook, impossible with a regular interval)
+   */
+  useEffect(() => {
+    if (!player || manualInterval === 0) return;
+    checkTrackWithTimestamp(player.getCurrentTime());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [player, manualInterval]);
+
+  /**
+   * Play/pause video
+   */
   useEffect(() => {
     if (paused === undefined || !player) return;
     if (paused) {
@@ -152,7 +174,6 @@ const YoutubeVideo: React.FC = () => {
             playerVars: {
               disablekb: 1,
               enablejsapi: 1,
-              controls: 0,
               showinfo: 0,
             },
           }} // defaults -> {}

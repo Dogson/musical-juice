@@ -31,12 +31,9 @@ const useTracksManager = (tracks: ITrack[]): IUseTracksManager => {
       const timestampTrackIdx =
         nextTrackIdx === -1 ? tracks.length - 1 : nextTrackIdx - 1;
 
-      setCurrentTrackIdx((v) => {
-        if (v !== timestampTrackIdx) nextTrack();
-        return v;
-      });
+      if (currentTrackIdx !== timestampTrackIdx) nextTrack();
     },
-    [nextTrack, tracks],
+    [currentTrackIdx, nextTrack, tracks],
   );
 
   return {
