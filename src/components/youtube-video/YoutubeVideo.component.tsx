@@ -50,13 +50,14 @@ const YoutubeVideo: React.FC = () => {
    * Stop showing static to show the gif
    */
   const handlePlay = () => {
-    if (skippingTrack) {
-      setSkippingTrack(false);
-    }
     if (checkTrackNameInterval.current || !player || !isBrowser) return;
     checkTrackNameInterval.current = window.setInterval(() => {
       setManualInterval((v) => v + 1);
     }, 1000);
+    if (skippingTrack) {
+      setSkippingTrack(false);
+      return;
+    }
     if (paused !== undefined) {
       window.dispatchEvent(eWindow.playVideo);
     } else {
