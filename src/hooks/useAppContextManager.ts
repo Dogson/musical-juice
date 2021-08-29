@@ -48,6 +48,30 @@ const useAppContextManager = (): IUseAppContextManager => {
   };
 
   /**
+   * Randomize a playlist and start it
+   * Can force an elem to get last
+   */
+  const randomizePlaylist = useCallback(
+    (putInLast?: IMix) => {
+      const moodMixes = mixes.filter((mix) => mix.mood === currentMood);
+      let elemIndex;
+
+      let randomPlaylist = shuffleMix(
+        putInLast ? moodMixes.filter((m) => m.id !== putInLast.id) : moodMixes,
+      );
+      if (putInLast) {
+        elemIndex = moodMixes.findIndex((m) => m.id === putInLast.id);
+        if (elemIndex) {
+          randomPlaylist = [...randomPlaylist, putInLast];
+        }
+      }
+      setMixPlaylist(randomPlaylist);
+      setMixIdx(0);
+    },
+    [currentMood, mixes, setMixIdx, setMixPlaylist],
+  );
+
+  /**
    * Load app data (mixes, atmospheres and moods) with gatsby GraphQL queries
    */
   const loadData = useCallback(() => {
@@ -75,8 +99,19 @@ const useAppContextManager = (): IUseAppContextManager => {
     if (!currentMood || !mixPlaylist || mixIdx === undefined) {
       return;
     }
-    setMixIdx((v) => (v as number) + 1);
-  }, [currentMood, mixIdx, mixPlaylist, setMixIdx]);
+    if (mixIdx < mixPlaylist.length - 1) {
+      setMixIdx((v) => (v as number) + 1);
+    } else {
+      randomizePlaylist(currentMix);
+    }
+  }, [
+    currentMix,
+    currentMood,
+    mixIdx,
+    mixPlaylist,
+    randomizePlaylist,
+    setMixIdx,
+  ]);
 
   /**
    * Change current mood
@@ -119,11 +154,8 @@ const useAppContextManager = (): IUseAppContextManager => {
     ) {
       return;
     }
-    const moodMixes = mixes.filter((mix) => mix.mood === currentMood);
-    const randomPlaylist = shuffleMix(moodMixes);
-    setMixPlaylist(randomPlaylist);
-    setMixIdx(0);
-  }, [currentMood, mixPlaylist, mixes, setMixIdx, setMixPlaylist]);
+    randomizePlaylist();
+  }, [currentMood, mixPlaylist, randomizePlaylist]);
 
   return {
     moods,
