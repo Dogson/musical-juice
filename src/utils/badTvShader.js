@@ -49,22 +49,12 @@ const initTvShader = (containerClassName, backgroundVideo, staticOnly) => {
   });
 
   // init camera
-  const camera = new THREE.PerspectiveCamera(
-    60,
-    window.innerWidth / window.innerHeight,
-    1,
-    1000,
-  );
+  const camera = new THREE.PerspectiveCamera(55, 1280 / 720, 20, 3000);
   camera.position.z = 1000;
   const scene = new THREE.Scene();
 
   // Add video plane
-  const planeGeometry = new THREE.PlaneGeometry(
-    window.innerWidth,
-    window.innerHeight,
-    1,
-    1,
-  );
+  const planeGeometry = new THREE.PlaneGeometry(1280, 720, 1, 1);
   const plane = new THREE.Mesh(planeGeometry, videoMaterial);
   scene.add(plane);
   plane.z = 0;
@@ -73,7 +63,7 @@ const initTvShader = (containerClassName, backgroundVideo, staticOnly) => {
 
   // init renderer
   const renderer = new THREE.WebGLRenderer();
-  renderer.setSize(1280, 720);
+  renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.domElement.id = 'bad-tv-shader';
   videoContainer.prepend(renderer.domElement);
 
@@ -100,8 +90,8 @@ const initTvShader = (containerClassName, backgroundVideo, staticOnly) => {
   const badTVParams = {
     mute: true,
     show: true,
-    distortion: 0.6,
-    distortion2: 0.4,
+    distortion: 0,
+    distortion2: 0,
     speed: 0.3,
     rollSpeed: 0,
   };
@@ -114,15 +104,15 @@ const initTvShader = (containerClassName, backgroundVideo, staticOnly) => {
 
   const rgbParams = {
     show: true,
-    amount: 0.005,
+    amount: 0.004,
     angle: 0.0,
   };
 
   const filmParams = {
     show: true,
-    count: 800,
-    sIntensity: 0.9,
-    nIntensity: 0.4,
+    count: 1000,
+    sIntensity: 0.7,
+    nIntensity: 0.3,
   };
 
   badTVPass.uniforms['distortion'].value = badTVParams.distortion;
@@ -165,8 +155,8 @@ const initTvShader = (containerClassName, backgroundVideo, staticOnly) => {
       video.play().then(() => {
         shouldAnimate = true;
       });
-      badTVPass.uniforms['distortion'].value = 0.6;
-      badTVPass.uniforms['distortion2'].value = 0.4;
+      badTVPass.uniforms['distortion'].value = 0;
+      badTVPass.uniforms['distortion2'].value = 0;
       staticPass.uniforms['amount'].value = 0;
     }
   };
@@ -184,8 +174,8 @@ const initTvShader = (containerClassName, backgroundVideo, staticOnly) => {
 
   window.onSkipEnd = () => {
     video.playbackRate = 1;
-    badTVPass.uniforms['distortion'].value = 0.6;
-    badTVPass.uniforms['distortion2'].value = 0.4;
+    badTVPass.uniforms['distortion'].value = 0;
+    badTVPass.uniforms['distortion2'].value = 0;
     staticPass.uniforms['amount'].value = 0;
   };
   window.skipEnd = new Event('skipEnd');
