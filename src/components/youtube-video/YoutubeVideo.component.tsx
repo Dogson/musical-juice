@@ -26,7 +26,6 @@ const YoutubeVideo: React.FC = () => {
   const { track, nextTrack, checkTrackWithTimestamp } = useTracksManager(
     currentMix?.tracks as ITrack[],
   );
-  const [mixTitle, setMixTitle] = useState('');
   const [player, setPlayer] = useState<YT.Player>();
   const [paused, setPaused] = useState<boolean>();
   const [skippingTrack, setSkippingTrack] = useState<boolean>();
@@ -42,7 +41,6 @@ const YoutubeVideo: React.FC = () => {
     setPlayer(e.target);
     e.target.seekTo(0, true);
     e.target.playVideo();
-    setMixTitle((e.target as unknown as any).playerInfo.videoData.title);
   };
 
   /**
@@ -159,13 +157,17 @@ const YoutubeVideo: React.FC = () => {
 
   return (
     <div className={styles.YoutubeVideo}>
-      <div className={styles.YoutubeVideo_interactiveLayer}>
-        <h1>{mixTitle}</h1>
-        <h2>{track?.title}</h2>
-        <Button onClick={handleNextTrack}>Chanson suivante !</Button>
-        <Button onClick={nextMix}>Mix suivant !</Button>
-        <Button onClick={() => setPaused(!paused)}>Pause</Button>
-      </div>
+      {videoLoaded && (
+        <div className={styles.YoutubeVideo_interactiveLayer}>
+          <h1>{currentMix?.title}</h1>
+          <h2 className={styles.YoutubeVideo_trackTitle}>
+            {!skippingTrack ? track?.title : ''}
+          </h2>
+          <Button onClick={handleNextTrack}>Chanson suivante !</Button>
+          <Button onClick={nextMix}>Mix suivant !</Button>
+          <Button onClick={() => setPaused(!paused)}>Pause</Button>
+        </div>
+      )}
       <div className={styles.YoutubeVideo_videoContainer}>
         <YouTube
           videoId={currentMix?.id}
