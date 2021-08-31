@@ -1,3 +1,5 @@
+@import 'src/styles/global.scss';
+
 .YoutubeVideo {
   width: 100%;
   height: 100%;
@@ -14,10 +16,18 @@
 
   &_interactiveLayer {
     z-index: 1;
+    @include flex-column();
+    align-items: center;
+    background: transparent;
+    box-shadow: inset 0 0 100px black;
   }
 
   &_videoWrapper {
     opacity: 0;
     z-index: -1;
+  }
+
+  &_trackTitle {
+    height: 100px;
   }
 }

@@ -1,6 +1,7 @@
 import { ITrack } from '../typings/Tracks.types';
 
-const specialChars = ' <>@!#$%^&*()_+[]{}?:;|\'"\\,./~`—-=';
+const startSpecialChars = ' <>@!#$%^&*()_+[]{}?:;|\'"\\,./~`—-=';
+const endSpecialChar = ' <>@!#$%^&*(_+[{}?:;|\'"\\,./~`—-=';
 
 const makeTrackParser = (
   startRx: RegExp,
@@ -39,7 +40,7 @@ const makeTrackParser = (
       let title = match[textIndex].trim();
       let substrIdx = 0;
       title.split('').some((el) => {
-        if (specialChars.indexOf(el) === -1) {
+        if (startSpecialChars.indexOf(el) === -1) {
           return true;
         }
         substrIdx += 1;
@@ -51,7 +52,7 @@ const makeTrackParser = (
       // eslint-disable-next-line for-direction
       for (let j = splitted.length - 1; j >= 0; j -= 1) {
         substrIdx = j + 1;
-        if (specialChars.indexOf(splitted[j]) === -1) {
+        if (endSpecialChar.indexOf(splitted[j]) === -1) {
           break;
         }
       }
