@@ -1,2 +1,5 @@
 # musical-juice
-De la musique, des sons ambiants, un lo-fi café étendu
+Des mix de musique de jeux vidéo, des fonds sonores ambiants, une interface retro : un lofi café JV étendu.
+
+
+WIP : https://develop--musical-juice.netlify.app/
