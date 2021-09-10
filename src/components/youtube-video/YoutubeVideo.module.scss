@@ -18,16 +18,25 @@
     z-index: 1;
     @include flex-column();
     align-items: center;
+    justify-content: space-between;
     background: transparent;
-    box-shadow: inset 0 0 100px black;
+    box-shadow: inset 0 0 2000px black;
   }
 
   &_videoWrapper {
-    opacity: 0;
     z-index: -1;
+    opacity: 0;
   }
 
   &_trackTitle {
-    height: 100px;
+  }
+
+  &_topInfos {
+  }
+
+  &_bottomInfos {
+  }
+
+  &_playerButtons {
   }
 }

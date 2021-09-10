@@ -158,14 +158,23 @@ const YoutubeVideo: React.FC = () => {
   return (
     <div className={styles.YoutubeVideo}>
       {videoLoaded && (
-        <div className={styles.YoutubeVideo_interactiveLayer}>
-          <h1>{currentMix?.title}</h1>
-          <h2 className={styles.YoutubeVideo_trackTitle}>
-            {!skippingTrack ? track?.title : ''}
-          </h2>
-          <Button onClick={handleNextTrack}>Chanson suivante !</Button>
-          <Button onClick={nextMix}>Mix suivant !</Button>
-          <Button onClick={() => setPaused(!paused)}>Pause</Button>
+        <div
+          className={styles.YoutubeVideo_interactiveLayer}
+          role="button"
+          onClick={() => setPaused(!paused)}
+        >
+          <div className={styles.YoutubeVideo_topInfos}>
+            <h1>{currentMix?.title}</h1>
+          </div>
+          <div className={styles.YoutubeVideo.bottomInfos}>
+            <h2 className={styles.YoutubeVideo_trackTitle}>
+              {!skippingTrack ? track?.title : ''}
+            </h2>
+            <div className={styles.YoutubeVideo_playerButtons}>
+              <Button onClick={handleNextTrack}>Chanson suivante !</Button>
+              <Button onClick={nextMix}>Mix suivant !</Button>
+            </div>
+          </div>
         </div>
       )}
       <div className={styles.YoutubeVideo_videoContainer}>
