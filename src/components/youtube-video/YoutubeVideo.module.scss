@@ -29,6 +29,7 @@
   }
 
   &_trackTitle {
+    @include flex-column-full-center();
   }
 
   &_topInfos {
@@ -38,5 +39,6 @@
   }
 
   &_playerButtons {
+    @include flex-row-full-center();
   }
 }
