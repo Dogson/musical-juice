@@ -1,21 +1,28 @@
-import React from 'react';
+import React, { CSSProperties } from 'react';
 import useSound from 'use-sound';
 
-import buttonPressSound from './assets/button-press.mp3';
+import buttonPressSound from '../../assets/button-press.mp3';
+import * as styles from './Button.module.scss';
 
-const Button: React.FC<{ onClick: () => void; children: React.ReactNode }> = ({
+const Button: React.FC<{ onClick: () => void; label: string }> = ({
   onClick,
-  children,
+  label,
 }) => {
   const [play] = useSound(buttonPressSound);
-  const handleClick = () => {
+  const handleClick = (e: React.MouseEvent) => {
     play();
+    e.stopPropagation();
     onClick();
   };
 
   return (
-    <button onClick={handleClick} type="button">
-      {children}
+    <button
+      onClick={handleClick}
+      type="button"
+      className={styles.Button}
+      style={{ '--content': label } as CSSProperties}
+    >
+      {label}
     </button>
   );
 };

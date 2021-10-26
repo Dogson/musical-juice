@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import YouTube from 'react-youtube';
 import useSound from 'use-sound';
 
+import buttonPressSound from '../../assets/button-press.mp3';
 import useAppContextManager from '../../hooks/useAppContextManager';
 import useTracksManager from '../../hooks/useTracksManager';
 import { ITrack } from '../../typings/Tracks.types';
@@ -23,6 +24,7 @@ const YoutubeVideo: React.FC = () => {
     fastFowardSound,
     { loop: true },
   );
+  const [playBtnSound] = useSound(buttonPressSound);
   const { track, nextTrack, checkTrackWithTimestamp } = useTracksManager(
     currentMix?.tracks as ITrack[],
   );
@@ -100,6 +102,11 @@ const YoutubeVideo: React.FC = () => {
     }
   };
 
+  const handleClickScreen = () => {
+    playBtnSound();
+    setPaused(!paused);
+  };
+
   /**
    * Check timestamp when the manual interval is updated
    * (necessary to get the correct state in the useTrackManager hook, impossible with a regular interval)
@@ -158,14 +165,23 @@ const YoutubeVideo: React.FC = () => {
   return (
     <div className={styles.YoutubeVideo}>
       {videoLoaded && (
-        <div className={styles.YoutubeVideo_interactiveLayer}>
-          <h1>{currentMix?.title}</h1>
-          <h2 className={styles.YoutubeVideo_trackTitle}>
-            {!skippingTrack ? track?.title : ''}
-          </h2>
-          <Button onClick={handleNextTrack}>Chanson suivante !</Button>
-          <Button onClick={nextMix}>Mix suivant !</Button>
-          <Button onClick={() => setPaused(!paused)}>Pause</Button>
+        <div
+          className={styles.YoutubeVideo_interactiveLayer}
+          role="button"
+          onClick={handleClickScreen}
+        >
+          <div className={styles.YoutubeVideo_topInfos}>
+            <h1>{currentMix?.title}</h1>
+          </div>
+          <div className={styles.YoutubeVideo.bottomInfos}>
+            <h2 className={styles.YoutubeVideo_trackTitle}>
+              {!skippingTrack ? track?.title : ''}
+            </h2>
+            <div className={styles.YoutubeVideo_playerButtons}>
+              <Button onClick={handleNextTrack} label="Chanson suivante" />
+              <Button onClick={nextMix} label="Mix suivant" />
+            </div>
+          </div>
         </div>
       )}
       <div className={styles.YoutubeVideo_videoContainer}>
