@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { AiFillFastForward, AiFillForward } from 'react-icons/ai';
 import YouTube from 'react-youtube';
 import useSound from 'use-sound';
 
@@ -29,6 +30,7 @@ const YoutubeVideo: React.FC = () => {
     currentMix?.tracks as ITrack[],
   );
   const [player, setPlayer] = useState<YT.Player>();
+  const [author, setAuthor] = useState('');
   const [paused, setPaused] = useState<boolean>();
   const [skippingTrack, setSkippingTrack] = useState<boolean>();
   const [videoLoaded, setVideoLoaded] = useState<boolean>(false);
@@ -44,6 +46,13 @@ const YoutubeVideo: React.FC = () => {
     e.target.seekTo(0, true);
     e.target.playVideo();
   };
+
+  useEffect(() => {
+    if (videoLoaded) {
+      console.log((player as any).getVideoData());
+      setAuthor((player as any).getVideoData().author);
+    }
+  }, [player, videoLoaded]);
 
   /**
    * Initializing interval to check if timestamp corresponds to a new track
@@ -172,14 +181,35 @@ const YoutubeVideo: React.FC = () => {
         >
           <div className={styles.YoutubeVideo_topInfos}>
             <h1>{currentMix?.title}</h1>
+            <h3>
+              par <strong>{author}</strong>
+            </h3>
           </div>
           <div className={styles.YoutubeVideo.bottomInfos}>
             <h2 className={styles.YoutubeVideo_trackTitle}>
               {!skippingTrack ? track?.title : ''}
             </h2>
             <div className={styles.YoutubeVideo_playerButtons}>
-              <Button onClick={handleNextTrack} label="Chanson suivante" />
-              <Button onClick={nextMix} label="Mix suivant" />
+              <Button
+                onClick={handleNextTrack}
+                label={
+                  <span className={styles.YoutubeVideo_btn}>
+                    <AiFillForward className={styles.YoutubeVideo_btnIcon} />
+                    Morceau suivant
+                  </span>
+                }
+              />
+              <Button
+                onClick={nextMix}
+                label={
+                  <span className={styles.YoutubeVideo_btn}>
+                    <AiFillFastForward
+                      className={styles.YoutubeVideo_btnIcon}
+                    />
+                    Mix suivant
+                  </span>
+                }
+              />
             </div>
           </div>
         </div>

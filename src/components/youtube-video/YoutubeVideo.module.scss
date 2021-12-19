@@ -20,7 +20,7 @@
     align-items: center;
     justify-content: space-between;
     background: transparent;
-    box-shadow: inset 0 0 2000px black;
+    box-shadow: inset 0 100px 2000px black, inset 0 -100px 2000px black;
   }
 
   &_videoWrapper {
@@ -33,6 +33,8 @@
   }
 
   &_topInfos {
+    margin-top: 40px;
+    @include flex-column-full-center();
   }
 
   &_bottomInfos {
@@ -40,5 +42,16 @@
 
   &_playerButtons {
     @include flex-row-full-center();
+  }
+
+  &_btn {
+    @include flex-row();
+    align-items: center;
+    justify-content: space-evenly;
+  }
+
+  &_btnIcon {
+    font-size: 25px;
+    padding-right: 5px;
   }
 }

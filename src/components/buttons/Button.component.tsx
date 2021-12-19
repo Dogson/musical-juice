@@ -4,7 +4,7 @@ import useSound from 'use-sound';
 import buttonPressSound from '../../assets/button-press.mp3';
 import * as styles from './Button.module.scss';
 
-const Button: React.FC<{ onClick: () => void; label: string }> = ({
+const Button: React.FC<{ onClick: () => void; label: React.ReactNode }> = ({
   onClick,
   label,
 }) => {

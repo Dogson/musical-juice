@@ -33,6 +33,17 @@ html {
   font-family: 'DotGothic';
   src: url('./fonts/DotGothic16-Regular.ttf');
 }
+
+@font-face {
+  font-family: 'Moon';
+  src: url('./fonts/Moon-Light.otf');
+}
+@font-face {
+  font-family: 'Moon';
+  src: url('./fonts/Moon-Bold.otf');
+  font-weight: bold;
+}
+
 body {
   margin: 0;
 }

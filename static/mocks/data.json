@@ -43,6 +43,13 @@
       "gifs": ["assets/persona2.mp4"]
     },
     {
+      "title": "Animal Crossing Lo-fi Mix",
+      "id": "WfMClt3K5K4",
+      "mood": "lofi",
+      "description": "0:00 Track 1\n2:30 Track 2\n5:35 Track 3\n8:34 Track 4\n11:33 Track 5\n13:59 Track 6\n16:38 Track 7\n19:13 Track 8\n21:49 Track 9\n25:09 Track 10\n28:11 Track 11\n30:50 Track 12\n33:23 Track 13\n36:39 Track 14\n40:09 Track 15\n42:35 Track 16\n45:07 Track 17\n47:25 Track 18\n49:56 Track 19\n53:20 Track 20\n55:58 Track 21",
+      "gifs": ["assets/animal-crossing.mp4"]
+    },
+    {
       "title": "Fruddle's Relaxing Mix 1",
       "id": "XC2bdmc8_04",
       "mood": "chill",
