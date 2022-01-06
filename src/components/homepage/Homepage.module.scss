@@ -1,0 +1,11 @@
+@import 'src/styles/global.scss';
+
+.Homepage {
+  width: 100vw;
+  height: 100vh;
+  @include flex-column-full-center();
+  font-family: AlienEncounter, sans-serif;
+  font-size: 40px;
+  color: white;
+  background: black;
+}
