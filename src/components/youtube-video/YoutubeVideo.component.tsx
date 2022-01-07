@@ -161,6 +161,13 @@ const YoutubeVideo: React.FC = () => {
     stopFastFowardSound,
   ]);
 
+  // cleaning
+  useEffect(
+    () => () => {
+      stopStaticSound();
+    },
+    [currentMix, stopStaticSound, videoLoaded],
+  );
   /**
    * Preloading video + showing static when changing mix
    */
