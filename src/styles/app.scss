@@ -44,6 +44,17 @@ html {
   font-weight: bold;
 }
 
+@font-face {
+  font-family: 'Exodus';
+  src: url('./fonts/ExodusDemo-Regular.otf');
+}
+
+@font-face {
+  font-family: 'Aquatico';
+  src: url('./fonts/Aquatico-Regular.otf');
+}
+
 body {
   margin: 0;
+  overflow: hidden;
 }
