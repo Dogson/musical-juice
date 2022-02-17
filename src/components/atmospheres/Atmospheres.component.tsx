@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import React, { useCallback, useContext, useEffect, useMemo } from 'react';
 import useSound from 'use-sound';
 
@@ -10,6 +11,7 @@ import rainSound from './assets/rain.mp3';
 import streetSound from './assets/street.mp3';
 import * as styles from './Atmospheres.module.scss';
 import FireworksEffect from './Fireworks.component';
+import RainEffect from './Rain.component';
 
 const Atmospheres: React.FC = () => {
   const { atmospheres, currentAtmosphere, changeAtmosphere } =
@@ -80,7 +82,7 @@ const Atmospheres: React.FC = () => {
           play: playRain,
           pause: pauseRain,
           stop: stopRain,
-          component: <FireworksEffect />,
+          component: <RainEffect />,
         };
       case 'street':
         return {
@@ -137,7 +139,13 @@ const Atmospheres: React.FC = () => {
 
   return (
     <div className={styles.Atmospheres}>
-      {atmosphereDetails && atmosphereDetails.component}
+      <div
+        className={classNames(styles.Atmospheres_animation, {
+          [styles.Atmospheres_animation__hidden]: atmospherePaused,
+        })}
+      >
+        {atmosphereDetails && atmosphereDetails.component}
+      </div>
       <div className={styles.Atmospheres_selector}>
         <select
           value={currentAtmosphere}

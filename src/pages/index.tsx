@@ -14,8 +14,7 @@ const IndexPage: React.FC = () => {
   const [moods, setMoods] = useState<string[]>([]);
   const [currentMood, setCurrentMood] = useState<string>();
   const [atmospheres, setAtmospheres] = useState<string[]>([]);
-  const [currentAtmosphere, setCurrentAtmosphere] =
-    useState<string>('fireworks');
+  const [currentAtmosphere, setCurrentAtmosphere] = useState<string>('rain');
   const [atmospherePaused, setAtmospherePaused] = useState<boolean>();
 
   return (
