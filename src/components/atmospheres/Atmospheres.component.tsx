@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect } from 'react';
+import React, { useCallback, useContext, useEffect, useMemo } from 'react';
 import useSound from 'use-sound';
 
 import AppContext from '../../context/app-context/AppContext';
@@ -9,6 +9,7 @@ import natureSound from './assets/nature.mp3';
 import rainSound from './assets/rain.mp3';
 import streetSound from './assets/street.mp3';
 import * as styles from './Atmospheres.module.scss';
+import FireworksEffect from './Fireworks.component';
 
 const Atmospheres: React.FC = () => {
   const { atmospheres, currentAtmosphere, changeAtmosphere } =
@@ -51,60 +52,45 @@ const Atmospheres: React.FC = () => {
     },
   );
 
-  const stopAllSounds = useCallback(() => {
-    stopFireplace();
-    stopFirework();
-    stopNature();
-    stopRain();
-    stopStreet();
-  }, [stopFireplace, stopFirework, stopNature, stopRain, stopStreet]);
-
-  const playAtmosphere = useCallback(() => {
+  const atmosphereDetails = useMemo(() => {
     switch (currentAtmosphere) {
       case 'fireplace':
-        playFireplace();
-        break;
+        return {
+          play: playFireplace,
+          pause: pauseFireplace,
+          stop: stopFireplace,
+          component: <FireworksEffect />,
+        };
       case 'fireworks':
-        playFirework();
-        break;
+        return {
+          play: playFirework,
+          pause: pauseFirework,
+          stop: stopFirework,
+          component: <FireworksEffect />,
+        };
       case 'nature':
-        playNature();
-        break;
+        return {
+          play: playNature,
+          pause: pauseNature,
+          stop: stopNature,
+          component: <FireworksEffect />,
+        };
       case 'rain':
-        playRain();
-        break;
+        return {
+          play: playRain,
+          pause: pauseRain,
+          stop: stopRain,
+          component: <FireworksEffect />,
+        };
       case 'street':
-        playStreet();
-        break;
+        return {
+          play: playStreet,
+          pause: pauseStreet,
+          stop: stopStreet,
+          component: <FireworksEffect />,
+        };
       default:
-    }
-  }, [
-    currentAtmosphere,
-    playFireplace,
-    playFirework,
-    playNature,
-    playRain,
-    playStreet,
-  ]);
-
-  const pauseAtmosphere = useCallback(() => {
-    switch (currentAtmosphere) {
-      case 'fireplace':
-        pauseFireplace();
-        break;
-      case 'fireworks':
-        pauseFirework();
-        break;
-      case 'nature':
-        pauseNature();
-        break;
-      case 'rain':
-        pauseRain();
-        break;
-      case 'street':
-        pauseStreet();
-        break;
-      default:
+        return undefined;
     }
   }, [
     currentAtmosphere,
@@ -113,24 +99,45 @@ const Atmospheres: React.FC = () => {
     pauseNature,
     pauseRain,
     pauseStreet,
+    playFireplace,
+    playFirework,
+    playNature,
+    playRain,
+    playStreet,
+    stopFireplace,
+    stopFirework,
+    stopNature,
+    stopRain,
+    stopStreet,
   ]);
+
+  const stopAllSounds = useCallback(() => {
+    stopFireplace();
+    stopFirework();
+    stopNature();
+    stopRain();
+    stopStreet();
+  }, [stopFireplace, stopFirework, stopNature, stopRain, stopStreet]);
 
   useEffect(() => {
     stopAllSounds();
-    playAtmosphere();
-  }, [currentAtmosphere, playAtmosphere, stopAllSounds]);
+    if (atmosphereDetails) {
+      atmosphereDetails.play();
+    }
+  }, [atmosphereDetails, stopAllSounds]);
 
   useEffect(() => {
+    if (!atmosphereDetails) return;
     if (atmospherePaused) {
-      pauseAtmosphere();
+      atmosphereDetails.pause();
     } else {
-      playAtmosphere();
+      atmosphereDetails.play();
     }
-  }, [pauseAtmosphere, atmospherePaused, playAtmosphere]);
+  }, [atmospherePaused, atmosphereDetails]);
 
   return (
     <div className={styles.Atmospheres}>
-      <div className={styles.Atmospheres_animation} />
+      {atmosphereDetails && atmosphereDetails.component}
       <div className={styles.Atmospheres_selector}>
         <select
           value={currentAtmosphere}

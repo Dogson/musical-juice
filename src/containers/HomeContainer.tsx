@@ -22,10 +22,8 @@ const HomeContainer: React.FC = () => {
       ) : (
         <>
           <YoutubeVideo key={currentMix.id} />
-          <div style={{ position: 'absolute', zIndex: 2 }}>
-            <Atmospheres />
-            <Moods />
-          </div>
+          <Atmospheres />
+          <Moods />
         </>
       )}
     </PageLayout>
