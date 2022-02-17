@@ -1,7 +1,7 @@
 import { useCallback, useContext, useEffect } from 'react';
 
 import appData from '../../static/mocks/data.json';
-import AppContext from '../context/AppContext';
+import AppContext from '../context/app-context/AppContext';
 import { IMix } from '../typings/Mixes.types';
 import parseYoutubeDescription from '../utils/parseYoutubeDescription';
 import { IUseAppContextManager } from './useAppContextManager.types';
@@ -78,7 +78,7 @@ const useAppContextManager = (): IUseAppContextManager => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     setMixes(
-      appData.mixes.map((mix: IMix) => ({
+      (appData.mixes as IMix[]).map((mix: IMix) => ({
         ...mix,
         tracks: parseYoutubeDescription(mix.description, false),
         url: `https://youtube.com/v/${mix.id}`,
@@ -101,7 +101,7 @@ const useAppContextManager = (): IUseAppContextManager => {
       return;
     }
     if (mixIdx < mixPlaylist.length - 1) {
-      setMixIdx((v) => (v as number) + 1);
+      setMixIdx((v) => (v || 0) + 1);
     } else {
       randomizePlaylist(currentMix);
     }
@@ -125,7 +125,7 @@ const useAppContextManager = (): IUseAppContextManager => {
   );
 
   /**
-   * Change current asmosphere
+   * Change current atmosphere
    */
   const changeAtmosphere = useCallback(
     (atmosphere: string) => {

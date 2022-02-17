@@ -1,4 +1,6 @@
-import { IMix } from '../typings/Mixes.types';
+import React from 'react';
+
+import { IMix } from '../../typings/Mixes.types';
 
 export interface IAppContext {
   moods: string[];
@@ -16,5 +18,9 @@ export interface IAppContext {
   mixPlaylist: IMix[];
   setMixPlaylist: (mixes: IMix[]) => void;
   mixIdx?: number;
-  setMixIdx: (idx: number) => void;
+  setMixIdx: React.Dispatch<React.SetStateAction<number | undefined>>;
+  atmospherePaused?: boolean;
+  setAtmospherePaused: React.Dispatch<
+    React.SetStateAction<boolean | undefined>
+  >;
 }

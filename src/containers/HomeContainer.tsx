@@ -7,7 +7,7 @@ import YoutubeVideo from '../components/youtube-video/YoutubeVideo.component';
 import useAppContextManager from '../hooks/useAppContextManager';
 import PageLayout from '../layout/page/Page.layout';
 
-const AppContainer: React.FC = () => {
+const HomeContainer: React.FC = () => {
   const { loadData, currentMix } = useAppContextManager();
   const [hasClicked, setHasClicked] = useState(false);
 
@@ -32,4 +32,4 @@ const AppContainer: React.FC = () => {
   );
 };
 
-export default AppContainer;
+export default HomeContainer;

@@ -1,43 +1,46 @@
 import classNames from 'classnames';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { AiFillFastForward, AiFillForward } from 'react-icons/ai';
 import YouTube from 'react-youtube';
 import useSound from 'use-sound';
 
 import buttonPressSound from '../../assets/button-press.mp3';
+import AppContext from '../../context/app-context/AppContext';
 import useAppContextManager from '../../hooks/useAppContextManager';
 import useTracksManager from '../../hooks/useTracksManager';
 import { ITrack } from '../../typings/Tracks.types';
 import { IWindow } from '../../typings/Window.types';
 import { initTvShader } from '../../utils/badTvShader';
 import Button from '../buttons/Button.component';
-import fastFowardSound from './assets/fast-forward.wav';
+import fastForwardSound from './assets/fast-forward.wav';
 import staticSound from './assets/static.wav';
 import * as styles from './YoutubeVideo.module.scss';
 
 const YoutubeVideo: React.FC = () => {
   const isBrowser = typeof window !== 'undefined';
   const { currentMix, nextMix } = useAppContextManager();
+  const { setAtmospherePaused } = useContext(AppContext);
   const [playStaticSound, { stop: stopStaticSound }] = useSound(staticSound, {
     volume: 0.1,
     loop: true,
+    interrupt: true,
   });
-  const [playFastFowardSound, { stop: stopFastFowardSound }] = useSound(
-    fastFowardSound,
-    { loop: true },
+  const [playFastForwardSound, { stop: stopFastForwardSound }] = useSound(
+    fastForwardSound,
+    { loop: true, interrupt: true },
   );
   const [playBtnSound] = useSound(buttonPressSound);
   const { track, nextTrack, checkTrackWithTimestamp, previousTrackTitle } =
     useTracksManager(currentMix?.tracks as ITrack[]);
   const [player, setPlayer] = useState<YT.Player>();
   const [author, setAuthor] = useState('');
-  const [paused, setPaused] = useState<boolean>();
   const [skippingTrack, setSkippingTrack] = useState<boolean>();
   const [videoLoaded, setVideoLoaded] = useState<boolean>(false);
   const timeoutRef = useRef<number>();
+  const [videoPaused, setVideoPaused] = useState<boolean>();
   const [manualInterval, setManualInterval] = useState(0);
   const checkTrackNameInterval = useRef<number | null>(null);
-  const eWindow: IWindow = window;
+  const eWindow: IWindow = window as unknown as IWindow;
 
   /**
    * Set Youtube Player, get video title, and autoplay video
@@ -72,6 +75,7 @@ const YoutubeVideo: React.FC = () => {
 
   useEffect(() => {
     if (videoLoaded) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       setAuthor((player as any).getVideoData().author);
     }
   }, [player, videoLoaded]);
@@ -87,9 +91,10 @@ const YoutubeVideo: React.FC = () => {
     }, 1000);
     if (skippingTrack) {
       setSkippingTrack(false);
+      setAtmospherePaused(true);
       return;
     }
-    if (paused !== undefined) {
+    if (videoPaused !== undefined) {
       window.dispatchEvent(eWindow.playVideo);
     } else {
       setVideoLoaded(true);
@@ -123,6 +128,7 @@ const YoutubeVideo: React.FC = () => {
     const next = nextTrack();
     if (next) {
       setSkippingTrack(true);
+      setAtmospherePaused(true);
       if (checkTrackNameInterval.current) {
         clearInterval(checkTrackNameInterval.current);
         checkTrackNameInterval.current = null;
@@ -134,8 +140,15 @@ const YoutubeVideo: React.FC = () => {
   };
 
   const handleClickScreen = () => {
+    if (!player) return;
     playBtnSound();
-    setPaused(!paused);
+    setVideoPaused(!videoPaused);
+    setAtmospherePaused(!videoPaused);
+    if (videoPaused) {
+      player.playVideo();
+    } else {
+      player.pauseVideo();
+    }
   };
 
   /**
@@ -148,39 +161,35 @@ const YoutubeVideo: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [player, manualInterval]);
 
-  /**
-   * Play/pause video
-   */
   useEffect(() => {
-    if (paused === undefined || !player) return;
-    if (paused) {
-      player.pauseVideo();
+    if (!videoLoaded) {
+      setAtmospherePaused(true);
+      playStaticSound();
     } else {
-      player.playVideo();
+      stopStaticSound();
+      setAtmospherePaused(false);
     }
-  }, [paused, player]);
-
-  useEffect(() => {
-    if (!videoLoaded) playStaticSound();
-    else stopStaticSound();
-  }, [playStaticSound, stopStaticSound, videoLoaded]);
+  }, [playStaticSound, setAtmospherePaused, stopStaticSound, videoLoaded]);
 
   useEffect(() => {
     if (skippingTrack !== undefined) {
       if (skippingTrack) {
-        playFastFowardSound();
+        setAtmospherePaused(true);
+        playFastForwardSound();
         window.dispatchEvent(eWindow.skipStart);
       } else {
-        stopFastFowardSound();
+        stopFastForwardSound();
+        setAtmospherePaused(false);
         window.dispatchEvent(eWindow.skipEnd);
       }
     }
   }, [
     eWindow.skipEnd,
     eWindow.skipStart,
-    playFastFowardSound,
+    playFastForwardSound,
+    setAtmospherePaused,
     skippingTrack,
-    stopFastFowardSound,
+    stopFastForwardSound,
   ]);
 
   // cleaning
@@ -194,10 +203,10 @@ const YoutubeVideo: React.FC = () => {
    * Preloading video + showing static when changing mix
    */
   useEffect(() => {
-    setPaused(undefined);
+    setAtmospherePaused(undefined);
     setVideoLoaded(false);
     initTvShader(styles.YoutubeVideo_videoContainer, currentMix?.gifs[0]);
-  }, [currentMix]);
+  }, [currentMix, setAtmospherePaused]);
 
   return (
     <div className={styles.YoutubeVideo}>
@@ -220,7 +229,7 @@ const YoutubeVideo: React.FC = () => {
               )}
             </h3>
           </div>
-          <div className={styles.YoutubeVideo.bottomInfos}>
+          <div className={styles.YoutubeVideo_bottomInfos}>
             {!skippingTrack ? (
               <h2
                 className={classNames(
