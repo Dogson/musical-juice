@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { ITrack } from '../typings/Tracks.types';
 import useAppContextManager from './useAppContextManager';
@@ -36,10 +36,16 @@ const useTracksManager = (tracks: ITrack[]): IUseTracksManager => {
     [currentTrackIdx, nextTrack, tracks],
   );
 
+  const previousTrackTitle = useMemo(() => {
+    if (currentTrackIdx > 0) return tracks[currentTrackIdx - 1].title;
+    return '';
+  }, [currentTrackIdx, tracks]);
+
   return {
     nextTrack,
     track: tracks ? tracks[currentTrackIdx] : undefined,
     checkTrackWithTimestamp,
+    previousTrackTitle,
   };
 };
 

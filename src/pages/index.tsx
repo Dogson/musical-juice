@@ -1,3 +1,5 @@
+import 'animate.css';
+
 import React, { useState } from 'react';
 
 import AppContainer from '../containers/App.container';

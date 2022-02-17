@@ -89,7 +89,9 @@ const Atmospheres: React.FC = () => {
       onChange={(e) => changeAtmosphere(e.target.value)}
     >
       {atmospheres.map((atm) => (
-        <option value={atm}>{atm}</option>
+        <option value={atm} key={atm}>
+          {atm}
+        </option>
       ))}
     </select>
   );

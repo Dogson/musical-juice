@@ -7,7 +7,9 @@ const Moods: React.FC = () => {
   return (
     <select value={currentMood} onChange={(e) => changeMood(e.target.value)}>
       {moods.map((mood) => (
-        <option value={mood}>{mood}</option>
+        <option value={mood} key={mood}>
+          {mood}
+        </option>
       ))}
     </select>
   );

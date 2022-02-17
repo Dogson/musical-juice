@@ -81,6 +81,7 @@ const useAppContextManager = (): IUseAppContextManager => {
       appData.mixes.map((mix: IMix) => ({
         ...mix,
         tracks: parseYoutubeDescription(mix.description, false),
+        url: `https://youtube.com/v/${mix.id}`,
       })),
     );
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment

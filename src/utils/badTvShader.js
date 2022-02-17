@@ -15,12 +15,17 @@ import '../libs/bad-tv-shader/lib/postprocessing/ShaderPass';
 // @ts-ignore
 import THREE from '../libs/bad-tv-shader/lib/three.min';
 
+let scene;
+let renderer;
+
 const initTvShader = (containerClassName, backgroundVideo, staticOnly) => {
   const isBrowser = typeof window !== 'undefined';
 
   if (!isBrowser) return;
 
   const removeShaders = () => {
+    scene = null;
+    renderer = null;
     const badTvShader = document.getElementById('bad-tv-shader');
     if (badTvShader) badTvShader.remove();
     window.removeEventListener('pauseVideo', window.onPause);
@@ -51,7 +56,7 @@ const initTvShader = (containerClassName, backgroundVideo, staticOnly) => {
   // init camera
   const camera = new THREE.PerspectiveCamera(55, 1280 / 720, 20, 3000);
   camera.position.z = 1000;
-  const scene = new THREE.Scene();
+  scene = new THREE.Scene();
 
   // Add video plane
   const planeGeometry = new THREE.PlaneGeometry(1280, 720, 1, 1);
@@ -62,9 +67,10 @@ const initTvShader = (containerClassName, backgroundVideo, staticOnly) => {
   plane.scale.x = plane.scale.y = 1.45;
 
   // init renderer
-  const renderer = new THREE.WebGLRenderer();
-  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer = new THREE.WebGLRenderer();
+  renderer.setSize(document.body.clientWidth, document.body.clientHeight);
   renderer.domElement.id = 'bad-tv-shader';
+  renderer.domElement.style.display = 'block';
   videoContainer.prepend(renderer.domElement);
 
   const renderPass = new THREE.RenderPass(scene, camera);

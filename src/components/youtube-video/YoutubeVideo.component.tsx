@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import React, { useEffect, useRef, useState } from 'react';
 import { AiFillFastForward, AiFillForward } from 'react-icons/ai';
 import YouTube from 'react-youtube';
@@ -18,7 +19,7 @@ const YoutubeVideo: React.FC = () => {
   const isBrowser = typeof window !== 'undefined';
   const { currentMix, nextMix } = useAppContextManager();
   const [playStaticSound, { stop: stopStaticSound }] = useSound(staticSound, {
-    volume: 0.3,
+    volume: 0.1,
     loop: true,
   });
   const [playFastFowardSound, { stop: stopFastFowardSound }] = useSound(
@@ -26,14 +27,14 @@ const YoutubeVideo: React.FC = () => {
     { loop: true },
   );
   const [playBtnSound] = useSound(buttonPressSound);
-  const { track, nextTrack, checkTrackWithTimestamp } = useTracksManager(
-    currentMix?.tracks as ITrack[],
-  );
+  const { track, nextTrack, checkTrackWithTimestamp, previousTrackTitle } =
+    useTracksManager(currentMix?.tracks as ITrack[]);
   const [player, setPlayer] = useState<YT.Player>();
   const [author, setAuthor] = useState('');
   const [paused, setPaused] = useState<boolean>();
   const [skippingTrack, setSkippingTrack] = useState<boolean>();
   const [videoLoaded, setVideoLoaded] = useState<boolean>(false);
+  const timeoutRef = useRef<number>();
   const [manualInterval, setManualInterval] = useState(0);
   const checkTrackNameInterval = useRef<number | null>(null);
   const eWindow: IWindow = window;
@@ -47,9 +48,30 @@ const YoutubeVideo: React.FC = () => {
     e.target.playVideo();
   };
 
+  /**
+   * timeout if mix is not charged
+   */
+  useEffect(() => {
+    if (!timeoutRef.current)
+      timeoutRef.current = window.setTimeout(() => {
+        setVideoLoaded((v) => {
+          if (!v) {
+            nextMix();
+          }
+          return v;
+        });
+      }, 5000);
+  }, [currentMix, nextMix]);
+
+  useEffect(
+    () => () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    },
+    [],
+  );
+
   useEffect(() => {
     if (videoLoaded) {
-      console.log((player as any).getVideoData());
       setAuthor((player as any).getVideoData().author);
     }
   }, [player, videoLoaded]);
@@ -175,7 +197,6 @@ const YoutubeVideo: React.FC = () => {
     setPaused(undefined);
     setVideoLoaded(false);
     initTvShader(styles.YoutubeVideo_videoContainer, currentMix?.gifs[0]);
-    initTvShader(styles.YoutubeVideo_videoContainer, null, true);
   }, [currentMix]);
 
   return (
@@ -187,15 +208,38 @@ const YoutubeVideo: React.FC = () => {
           onClick={handleClickScreen}
         >
           <div className={styles.YoutubeVideo_topInfos}>
-            <h1>{currentMix?.title}</h1>
-            <h3>
-              par <strong>{author}</strong>
+            <h1 className="animate__animated animate__fadeIn">
+              {currentMix?.title}
+            </h1>
+            <h3 className="animate__animated animate__fadeIn">
+              par{' '}
+              {currentMix && (
+                <a href={currentMix.url} target="_blank" rel="noreferrer">
+                  {author}
+                </a>
+              )}
             </h3>
           </div>
           <div className={styles.YoutubeVideo.bottomInfos}>
-            <h2 className={styles.YoutubeVideo_trackTitle}>
-              {!skippingTrack ? track?.title : ''}
-            </h2>
+            {!skippingTrack ? (
+              <h2
+                className={classNames(
+                  styles.YoutubeVideo_trackTitle,
+                  'animate__animated animate__fadeInLeft',
+                )}
+              >
+                {track?.title}
+              </h2>
+            ) : (
+              <h2
+                className={classNames(
+                  styles.YoutubeVideo_trackTitle,
+                  'animate__animated animate__fadeOutRight',
+                )}
+              >
+                {previousTrackTitle}
+              </h2>
+            )}
             <div className={styles.YoutubeVideo_playerButtons}>
               <Button
                 onClick={handleNextTrack}
@@ -221,7 +265,11 @@ const YoutubeVideo: React.FC = () => {
           </div>
         </div>
       )}
-      <div className={styles.YoutubeVideo_videoContainer}>
+      <div
+        className={classNames(styles.YoutubeVideo_videoContainer, {
+          [styles.YoutubeVideo_videoContainer__hidden]: !videoLoaded,
+        })}
+      >
         <YouTube
           videoId={currentMix?.id}
           className={styles.YoutubeVideo_video}
