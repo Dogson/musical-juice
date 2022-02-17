@@ -1,6 +1,11 @@
 import classNames from 'classnames';
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import { AiFillFastForward, AiFillForward } from 'react-icons/ai';
+import {
+  AiFillFastForward,
+  AiFillForward,
+  AiFillPauseCircle,
+  AiFillPlayCircle,
+} from 'react-icons/ai';
 import YouTube from 'react-youtube';
 import useSound from 'use-sound';
 
@@ -11,7 +16,9 @@ import useTracksManager from '../../hooks/useTracksManager';
 import { ITrack } from '../../typings/Tracks.types';
 import { IWindow } from '../../typings/Window.types';
 import { initTvShader } from '../../utils/badTvShader';
+import AtmosphereSelector from '../atmospheres/AtmosphereSelector.component';
 import Button from '../buttons/Button.component';
+import MoodSelector from '../moods/MoodSelector.component';
 import fastForwardSound from './assets/fast-forward.wav';
 import staticSound from './assets/static.wav';
 import * as styles from './YoutubeVideo.module.scss';
@@ -139,7 +146,7 @@ const YoutubeVideo: React.FC = () => {
     }
   };
 
-  const handleClickScreen = () => {
+  const handlePauseClick = () => {
     if (!player) return;
     playBtnSound();
     setVideoPaused(!videoPaused);
@@ -211,11 +218,7 @@ const YoutubeVideo: React.FC = () => {
   return (
     <div className={styles.YoutubeVideo}>
       {videoLoaded && (
-        <div
-          className={styles.YoutubeVideo_interactiveLayer}
-          role="button"
-          onClick={handleClickScreen}
-        >
+        <div className={styles.YoutubeVideo_interactiveLayer} role="button">
           <div className={styles.YoutubeVideo_topInfos}>
             <h1 className="animate__animated animate__fadeIn">
               {currentMix?.title}
@@ -229,6 +232,13 @@ const YoutubeVideo: React.FC = () => {
               )}
             </h3>
           </div>
+          <div className={styles.YoutubeVideo_atmosphereSelector}>
+            <AtmosphereSelector />
+          </div>
+          <div className={styles.YoutubeVideo_moodSelector}>
+            <MoodSelector />
+          </div>
+
           <div className={styles.YoutubeVideo_bottomInfos}>
             {!skippingTrack ? (
               <h2
@@ -250,6 +260,23 @@ const YoutubeVideo: React.FC = () => {
               </h2>
             )}
             <div className={styles.YoutubeVideo_playerButtons}>
+              <Button
+                onClick={handlePauseClick}
+                label={
+                  <span className={styles.YoutubeVideo_btn}>
+                    {videoPaused ? (
+                      <AiFillPlayCircle
+                        className={styles.YoutubeVideo_btnIcon}
+                      />
+                    ) : (
+                      <AiFillPauseCircle
+                        className={styles.YoutubeVideo_btnIcon}
+                      />
+                    )}
+                    {videoPaused ? 'Play' : 'Pause'}
+                  </span>
+                }
+              />
               <Button
                 onClick={handleNextTrack}
                 label={

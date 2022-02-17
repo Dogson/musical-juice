@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
-import Atmospheres from '../components/atmospheres/Atmospheres.component';
+import AtmospheresEffects from '../components/atmospheres/AtmospheresEffects.component';
 import Homepage from '../components/homepage/Homepage.component';
-import Moods from '../components/moods/Moods.component';
 import YoutubeVideo from '../components/youtube-video/YoutubeVideo.component';
 import useAppContextManager from '../hooks/useAppContextManager';
 import PageLayout from '../layout/page/Page.layout';
@@ -22,8 +21,7 @@ const HomeContainer: React.FC = () => {
       ) : (
         <>
           <YoutubeVideo key={currentMix.id} />
-          <Atmospheres />
-          <Moods />
+          <AtmospheresEffects />
         </>
       )}
     </PageLayout>
