@@ -90,7 +90,7 @@ const useAppContextManager = (): IUseAppContextManager => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     setAtmospheres(appData.atmospheres);
-    setCurrentMood('groovy');
+    setCurrentMood('lofi');
   }, [setAtmospheres, setCurrentMood, setMixes, setMoods]);
 
   /**

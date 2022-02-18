@@ -42,9 +42,11 @@
     "react-modal": "^3.11.2",
     "react-sidebar": "^3.0.2",
     "react-tooltip": "^3.11.6",
+    "react-tsparticles": "^1.41.2",
     "react-youtube": "^7.13.1",
     "showdown": "^1.9.1",
     "three": "^0.132.0",
+    "tsparticles": "^1.41.2",
     "typescript": "^4.3.5",
     "use-sound": "^4.0.1",
     "youtube-player": "^5.5.2"

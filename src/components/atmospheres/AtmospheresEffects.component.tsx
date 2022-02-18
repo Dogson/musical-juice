@@ -10,7 +10,9 @@ import natureSound from './assets/nature.mp3';
 import rainSound from './assets/rain.wav';
 import streetSound from './assets/street.mp3';
 import * as styles from './Atmospheres.module.scss';
+import FireEffect from './Fire.component';
 import FireworksEffect from './Fireworks.component';
+import NatureEffect from './Nature.component';
 import RainEffect from './Rain.component';
 
 const Atmospheres: React.FC = () => {
@@ -20,7 +22,7 @@ const Atmospheres: React.FC = () => {
   const [playFireplace, { stop: stopFireplace, pause: pauseFireplace }] =
     useSound(fireplaceSound, {
       loop: true,
-      volume: 0.8,
+      volume: 1.3,
       interrupt: true,
     });
   const [playFirework, { stop: stopFirework, pause: pauseFirework }] = useSound(
@@ -60,7 +62,7 @@ const Atmospheres: React.FC = () => {
           play: playFireplace,
           pause: pauseFireplace,
           stop: stopFireplace,
-          component: <FireworksEffect />,
+          component: <FireEffect />,
         };
       case 'fireworks':
         return {
@@ -74,7 +76,7 @@ const Atmospheres: React.FC = () => {
           play: playNature,
           pause: pauseNature,
           stop: stopNature,
-          component: <FireworksEffect />,
+          component: <NatureEffect />,
         };
       case 'rain':
         return {
