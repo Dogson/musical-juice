@@ -191,26 +191,12 @@ const initTvShader = (containerClassName, backgroundVideo, staticOnly) => {
 
   window.addEventListener('resize', onResize, false);
 
-  let blurred = false;
-
-  window.onfocus = () => {
-    blurred = false;
-  };
-
-  window.onblur = () => {
-    blurred = true;
-  };
-
   const animate = () => {
     shaderTime += 0.1;
     badTVPass.uniforms.time.value = shaderTime;
     filmPass.uniforms.time.value = shaderTime;
     staticPass.uniforms.time.value = shaderTime;
-    if (
-      video.readyState === video.HAVE_ENOUGH_DATA &&
-      shouldAnimate &&
-      !blurred
-    ) {
+    if (video.readyState === video.HAVE_ENOUGH_DATA && shouldAnimate) {
       if (videoTexture) videoTexture.needsUpdate = true;
     }
 

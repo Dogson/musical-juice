@@ -1,0 +1,27 @@
+.Atmospheres {
+  z-index: 3;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+
+  &_animation {
+    width: 100%;
+    height: 100%;
+
+    &__hidden {
+      opacity: 0;
+    }
+  }
+
+  &_fireworks,
+  &_rain,
+  &_fire {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.AtmosphereSelector {
+}

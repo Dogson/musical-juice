@@ -2,8 +2,8 @@ import 'animate.css';
 
 import React, { useState } from 'react';
 
-import AppContainer from '../containers/App.container';
-import { AppProvider } from '../context/AppContext';
+import HomeContainer from '../containers/HomeContainer';
+import { AppProvider } from '../context/app-context/AppContext';
 import { IMix } from '../typings/Mixes.types';
 
 const IndexPage: React.FC = () => {
@@ -15,6 +15,7 @@ const IndexPage: React.FC = () => {
   const [currentMood, setCurrentMood] = useState<string>();
   const [atmospheres, setAtmospheres] = useState<string[]>([]);
   const [currentAtmosphere, setCurrentAtmosphere] = useState<string>();
+  const [atmospherePaused, setAtmospherePaused] = useState<boolean>();
 
   return (
     <AppProvider
@@ -35,9 +36,11 @@ const IndexPage: React.FC = () => {
         currentAtmosphere,
         setAtmospheres,
         setCurrentAtmosphere,
+        atmospherePaused,
+        setAtmospherePaused,
       }}
     >
-      <AppContainer />
+      <HomeContainer />
     </AppProvider>
   );
 };
