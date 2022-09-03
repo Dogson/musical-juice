@@ -26,7 +26,7 @@ import * as styles from './YoutubeVideo.module.scss';
 const YoutubeVideo: React.FC = () => {
   const isBrowser = typeof window !== 'undefined';
   const { currentMix, nextMix } = useAppContextManager();
-  const { setAtmospherePaused } = useContext(AppContext);
+  const { setAtmospherePaused, setIsLoading } = useContext(AppContext);
   const [playStaticSound, { stop: stopStaticSound }] = useSound(staticSound, {
     volume: 0.1,
     loop: true,
@@ -105,7 +105,6 @@ const YoutubeVideo: React.FC = () => {
       window.dispatchEvent(eWindow.playVideo);
     } else {
       setVideoLoaded(true);
-      initTvShader(styles.YoutubeVideo_videoContainer, currentMix?.gifs[0]);
     }
   };
 
@@ -172,11 +171,21 @@ const YoutubeVideo: React.FC = () => {
     if (!videoLoaded) {
       setAtmospherePaused(true);
       playStaticSound();
+      setIsLoading(true);
     } else {
       stopStaticSound();
       setAtmospherePaused(false);
+      initTvShader(styles.YoutubeVideo_videoContainer, currentMix?.gifs[0]);
+      setIsLoading(false);
     }
-  }, [playStaticSound, setAtmospherePaused, stopStaticSound, videoLoaded]);
+  }, [
+    currentMix?.gifs,
+    playStaticSound,
+    setAtmospherePaused,
+    setIsLoading,
+    stopStaticSound,
+    videoLoaded,
+  ]);
 
   useEffect(() => {
     if (skippingTrack !== undefined) {
@@ -212,7 +221,6 @@ const YoutubeVideo: React.FC = () => {
   useEffect(() => {
     setAtmospherePaused(undefined);
     setVideoLoaded(false);
-    initTvShader(styles.YoutubeVideo_videoContainer, currentMix?.gifs[0]);
   }, [currentMix, setAtmospherePaused]);
 
   return (

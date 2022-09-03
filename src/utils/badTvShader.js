@@ -17,6 +17,14 @@ import THREE from '../libs/bad-tv-shader/lib/three.min';
 
 let scene;
 let renderer;
+let renderPass;
+let videoTexture;
+let videoMaterial;
+let camera;
+let planeGeometry;
+let plane;
+let composer;
+let animateHandle;
 
 const initTvShader = (containerClassName, backgroundVideo, staticOnly) => {
   const isBrowser = typeof window !== 'undefined';
@@ -24,16 +32,17 @@ const initTvShader = (containerClassName, backgroundVideo, staticOnly) => {
   if (!isBrowser) return;
 
   const removeShaders = () => {
-    scene = null;
-    renderer = null;
-    const badTvShader = document.getElementById('bad-tv-shader');
-    if (badTvShader) badTvShader.remove();
-    window.removeEventListener('pauseVideo', window.onPause);
-    window.removeEventListener('playVideo', window.onPlay);
-    window.removeEventListener('skipStart', window.onSkipStart);
-    window.removeEventListener('skipEnd', window.onSkipEnd);
-  };
+    if (renderer) {
+      renderer.dispose();
+    }
+    if (videoTexture) videoTexture.dispose();
+    if (videoMaterial) videoMaterial.dispose();
+    if (planeGeometry) planeGeometry.dispose();
 
+    if (animateHandle) {
+      cancelAnimationFrame(animateHandle);
+    }
+  };
   removeShaders();
 
   let shaderTime = 0;
@@ -46,34 +55,37 @@ const initTvShader = (containerClassName, backgroundVideo, staticOnly) => {
     video.play();
   }
   // init video texture
-  const videoTexture = new THREE.Texture(video);
+  videoTexture = new THREE.Texture(video);
   videoTexture.minFilter = THREE.LinearFilter;
   videoTexture.magFilter = THREE.LinearFilter;
-  const videoMaterial = new THREE.MeshBasicMaterial({
+  videoMaterial = new THREE.MeshBasicMaterial({
     map: videoTexture,
   });
 
   // init camera
-  const camera = new THREE.PerspectiveCamera(55, 1280 / 720, 20, 3000);
+  camera = new THREE.PerspectiveCamera(55, 1280 / 720, 20, 3000);
   camera.position.z = 1000;
   scene = new THREE.Scene();
 
   // Add video plane
-  const planeGeometry = new THREE.PlaneGeometry(1280, 720, 1, 1);
-  const plane = new THREE.Mesh(planeGeometry, videoMaterial);
+  planeGeometry = new THREE.PlaneGeometry(1280, 720, 1, 1);
+  plane = new THREE.Mesh(planeGeometry, videoMaterial);
   scene.add(plane);
   plane.z = 0;
   // eslint-disable-next-line no-multi-assign
   plane.scale.x = plane.scale.y = 1.45;
 
   // init renderer
-  renderer = new THREE.WebGLRenderer();
-  renderer.setSize(document.body.clientWidth, document.body.clientHeight);
-  renderer.domElement.id = 'bad-tv-shader';
-  renderer.domElement.style.display = 'block';
-  videoContainer.prepend(renderer.domElement);
+  if (!renderer) {
+    renderer = new THREE.WebGLRenderer();
+    renderer.setSize(800, 600);
+    renderer.domElement.id = 'bad-tv-shader';
+    renderer.domElement.style.display = 'block';
+  }
 
-  const renderPass = new THREE.RenderPass(scene, camera);
+  if (videoContainer) videoContainer.prepend(renderer.domElement);
+
+  renderPass = new THREE.RenderPass(scene, camera);
   const badTVPass = new THREE.ShaderPass(THREE.BadTVShader);
   const rgbPass = new THREE.ShaderPass(THREE.RGBShiftShader);
   const filmPass = new THREE.ShaderPass(THREE.FilmShader);
@@ -82,14 +94,17 @@ const initTvShader = (containerClassName, backgroundVideo, staticOnly) => {
 
   filmPass.uniforms.grayscale.value = 0;
 
-  const composer = new THREE.EffectComposer(renderer);
+  if (!composer) composer = new THREE.EffectComposer(renderer);
+  composer.passes = [];
   composer.addPass(renderPass);
   composer.addPass(filmPass);
   composer.addPass(badTVPass);
   composer.addPass(rgbPass);
   composer.addPass(staticPass);
   composer.addPass(copyPass);
+
   copyPass.renderToScreen = true;
+
   //set shader uniforms
   filmPass.uniforms.grayscale.value = 0;
 
@@ -150,7 +165,6 @@ const initTvShader = (containerClassName, backgroundVideo, staticOnly) => {
       video.pause();
       badTVPass.uniforms['distortion'].value = 1.7;
       badTVPass.uniforms['distortion2'].value = 1;
-      staticPass.uniforms['amount'].value = 0.1;
     }
   };
   window.pauseVideo = new Event('pauseVideo');
@@ -163,7 +177,6 @@ const initTvShader = (containerClassName, backgroundVideo, staticOnly) => {
       });
       badTVPass.uniforms['distortion'].value = 0;
       badTVPass.uniforms['distortion2'].value = 0;
-      staticPass.uniforms['amount'].value = 0;
     }
   };
   window.playVideo = new Event('playVideo');
@@ -200,7 +213,7 @@ const initTvShader = (containerClassName, backgroundVideo, staticOnly) => {
       if (videoTexture) videoTexture.needsUpdate = true;
     }
 
-    requestAnimationFrame(animate);
+    animateHandle = requestAnimationFrame(animate);
     composer.render(0.1);
   };
 
