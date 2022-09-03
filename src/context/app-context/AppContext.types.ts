@@ -23,4 +23,6 @@ export interface IAppContext {
   setAtmospherePaused: React.Dispatch<
     React.SetStateAction<boolean | undefined>
   >;
+  isLoading?: boolean;
+  setIsLoading: (val: boolean) => void;
 }

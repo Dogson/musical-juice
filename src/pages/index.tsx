@@ -16,6 +16,7 @@ const IndexPage: React.FC = () => {
   const [atmospheres, setAtmospheres] = useState<string[]>([]);
   const [currentAtmosphere, setCurrentAtmosphere] = useState<string>();
   const [atmospherePaused, setAtmospherePaused] = useState<boolean>();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   return (
     <AppProvider
@@ -38,6 +39,8 @@ const IndexPage: React.FC = () => {
         setCurrentAtmosphere,
         atmospherePaused,
         setAtmospherePaused,
+        isLoading,
+        setIsLoading,
       }}
     >
       <HomeContainer />
