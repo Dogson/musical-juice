@@ -9,9 +9,8 @@ import useTracksManager from '../../hooks/useTracksManager';
 import { ITrack } from '../../typings/Tracks.types';
 import { IWindow } from '../../typings/Window.types';
 import { initTvShader } from '../../utils/badTvShader';
-import AtmosphereSelector from '../atmospheres/AtmosphereSelector.component';
 import Button, { Icons } from '../buttons/Button.component';
-import MoodSelector from '../moods/MoodSelector.component';
+import SettingsMenu from '../settings-menu/SettingsMenu.component';
 import fastForwardSound from './assets/fast-forward.wav';
 import staticSound from './assets/static.wav';
 import * as styles from './YoutubeVideo.module.scss';
@@ -253,12 +252,6 @@ const YoutubeVideo: React.FC = () => {
             </div>
             <Button onClick={nextMix} icon={Icons.Shuffle} size="small" />
           </div>
-          <div className={styles.YoutubeVideo_atmosphereSelector}>
-            <AtmosphereSelector />
-          </div>
-          <div className={styles.YoutubeVideo_moodSelector}>
-            <MoodSelector />
-          </div>
 
           <div className={styles.YoutubeVideo_bottomInfos}>
             {!skippingTrack ? (
@@ -320,6 +313,9 @@ const YoutubeVideo: React.FC = () => {
                 icon={Icons.Forward}
               />
             </div>
+          </div>
+          <div className={styles.YoutubeVideo_settings}>
+            <SettingsMenu />
           </div>
         </div>
       )}

@@ -11,7 +11,7 @@ const ForwardIcon: React.FC<{ color?: string }> = ({
     viewBox="0 0 24 24"
     strokeWidth="2"
     stroke={color}
-    fill={color}
+    fill="none"
     strokeLinecap="round"
     strokeLinejoin="round"
   >

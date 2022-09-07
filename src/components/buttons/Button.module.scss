@@ -27,6 +27,8 @@
 
   &:hover {
     background: var(--color-main);
+    color: var(--color-main);
+    @include text-stroke(var(--color-secondary));
 
     svg {
       stroke: var(--color-secondary);
@@ -35,13 +37,14 @@
 
   &:active,
   &__active {
-    box-shadow: unset;
-    background: var(--color-main);
-    @include text-stroke(transparent);
+    box-shadow: unset !important;
+    background: var(--color-main) !important;
+    text-shadow: none !important;
+    color: var(--color-secondary) !important;
 
     svg {
-      stroke: var(--color-secondary);
-      fill: var(--color-secondary);
+      stroke: var(--color-secondary) !important;
+      fill: var(--color-secondary) !important;
     }
   }
 }

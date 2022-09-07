@@ -99,6 +99,6 @@
       "gifs": ["assets/red dead.mp4"]
     }
   ],
-  "atmospheres": ["street", "rain", "fireplace", "fireworks", "nature"],
+  "atmospheres": ["rain", "fireplace", "nature"],
   "moods": ["groovy", "chill", "lofi"]
 }

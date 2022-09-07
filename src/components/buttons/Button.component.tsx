@@ -4,9 +4,12 @@ import useSound from 'use-sound';
 
 import buttonPressSound from '../../assets/button-press.mp3';
 import BackwardIcon from '../icons/BackwardIcon.component';
+import FireplaceIcon from '../icons/FireplaceIcon.component';
 import ForwardIcon from '../icons/ForwardIcon.component';
+import NatureIcon from '../icons/NatureIcon.component';
 import PauseIcon from '../icons/PauseIcon.component';
 import PlayIcon from '../icons/PlayIcon.component';
+import RainIcon from '../icons/RainIcon.component';
 import ShuffleIcon from '../icons/ShuffleIcon.component';
 import * as styles from './Button.module.scss';
 
@@ -16,6 +19,9 @@ export const enum Icons {
   Shuffle,
   Forward,
   Backward,
+  Rain = 'rain',
+  Fireplace = 'fireplace',
+  Nature = 'nature',
 }
 
 const Button: React.FC<{
@@ -56,6 +62,12 @@ const Button: React.FC<{
         return <ForwardIcon />;
       case Icons.Backward:
         return <BackwardIcon />;
+      case Icons.Rain:
+        return <RainIcon />;
+      case Icons.Nature:
+        return <NatureIcon />;
+      case Icons.Fireplace:
+        return <FireplaceIcon />;
       default:
         return null;
     }
