@@ -12,6 +12,11 @@ html {
   --size-big: 20px;
   --size-bigger: 24px;
 
+  //colors
+  --color-main: #42ff00;
+  --color-secondary: #611c35;
+  --color-dark: #1c1018;
+
   //media sizes
   --media-tablet: 'screen and (max-width : 1020px)';
   --media-phone: 'screen and (max-width : 700px)';
@@ -30,33 +35,21 @@ html {
 }
 
 @font-face {
-  font-family: 'DotGothic';
-  src: url('./fonts/DotGothic16-Regular.ttf');
+  font-family: 'Lazer84';
+  src: url('./fonts/Lazer84.ttf');
 }
 
 @font-face {
-  font-family: 'Moon';
-  src: url('./fonts/Moon-Light.otf');
-}
-@font-face {
-  font-family: 'Moon';
-  src: url('./fonts/Moon-Bold.otf');
-  font-weight: bold;
-}
-
-@font-face {
-  font-family: 'Exodus';
-  src: url('./fonts/ExodusDemo-Regular.otf');
-}
-
-@font-face {
-  font-family: 'Aquatico';
-  src: url('./fonts/Aquatico-Regular.otf');
+  font-family: 'BasicLazer';
+  src: url('./fonts/BasicLazer.otf');
 }
 
 body {
   margin: 0;
   overflow: hidden;
+  font-family: BasicLazer, sans-serif;
+  color: var(--color-main);
+  font-weight: 300;
 }
 
 canvas {

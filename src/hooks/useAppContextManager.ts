@@ -90,8 +90,7 @@ const useAppContextManager = (): IUseAppContextManager => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     setAtmospheres(appData.atmospheres);
-    setCurrentMood('lofi');
-  }, [setAtmospheres, setCurrentMood, setMixes, setMoods]);
+  }, [setAtmospheres, setMixes, setMoods]);
 
   /**
    * Go to the next mix in the playlist

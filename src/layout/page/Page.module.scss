@@ -24,15 +24,4 @@
     min-width: 100vw;
     min-height: 100vh;
   }
-
-  &:after {
-    position: absolute;
-    content: '';
-    top: 500px;
-    width: 10px;
-    height: 10px;
-    animation: animate 14s linear infinite;
-    background-color: red;
-    z-index: 3000;
-  }
 }

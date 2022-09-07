@@ -44,20 +44,62 @@
     opacity: 0;
   }
 
-  &_trackTitle {
+  &_trackInfos {
+    font-weight: 300;
     @include flex-column-full-center();
+    letter-spacing: 3px;
+  }
+
+  &_trackTitle {
+    font-size: 35px;
+  }
+
+  &_trackPosition {
+    font-size: 22px;
+    opacity: 0.6;
+  }
+
+  &_titleWrapper {
+    transform: rotate(-4.49deg);
   }
 
   &_topInfos {
     margin-top: 40px;
     @include flex-column-full-center();
+
+    h3 {
+      font-family: BasicLazer, sans-serif;
+      font-size: 30px;
+      letter-spacing: 7px;
+      color: var(--color-secondary);
+      @include text-stroke(var(--color-main));
+      font-weight: 300;
+    }
+
+    h1 {
+      font-weight: 300;
+      font-family: 'Lazer84', sans-serif;
+      font-size: 40px;
+      text-shadow: 0 8px 18px var(--color-secondary);
+      letter-spacing: 4px;
+      word-spacing: 6px;
+      margin-top: 0;
+      margin-bottom: 10px;
+      -webkit-text-stroke: 1px var(--color-main);
+      color: transparent;
+    }
   }
 
   &_bottomInfos {
+    @include flex-column-full-center();
+    margin-bottom: 50px;
   }
 
   &_playerButtons {
-    @include flex-row-full-center();
+    @include flex-row();
+    width: 270px;
+    align-items: center;
+    justify-content: space-between;
   }
 
   &_btn {
@@ -83,5 +125,9 @@
 
   &_moodSelector {
     right: 100px;
+  }
+
+  a {
+    color: inherit;
   }
 }
