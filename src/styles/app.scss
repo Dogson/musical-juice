@@ -17,10 +17,6 @@ html {
   --color-secondary: #611c35;
   --color-dark: #1c1018;
 
-  //media sizes
-  --media-tablet: 'screen and (max-width : 1020px)';
-  --media-phone: 'screen and (max-width : 700px)';
-
   font-family: 'Roboto', sans-serif;
   font-weight: var(--weight-regular);
   font-size: var(--size-normal);
@@ -54,4 +50,6 @@ body {
 
 canvas {
   position: absolute;
+  max-width: 100vw;
+  max-height: 100vh;
 }

@@ -65,7 +65,11 @@ const SettingsMenu: React.FC = () => {
             <div className={styles.SettingsMenu_buttons}>
               {atmospheres.map((atmosphere) => (
                 <Button
-                  onClick={() => changeAtmosphere(atmosphere)}
+                  onClick={() =>
+                    changeAtmosphere(
+                      atmosphere === currentAtmosphere ? undefined : atmosphere,
+                    )
+                  }
                   icon={atmosphere as unknown as Icons}
                   active={atmosphere === currentAtmosphere}
                 />

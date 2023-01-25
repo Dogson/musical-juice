@@ -26,6 +26,10 @@
     1px 1px 0 $color;
 }
 
+@function min($numbers...) {
+  @return m#{i}n(#{$numbers});
+}
+
 button {
   -webkit-appearance: none !important;
   -moz-appearance: none !important;

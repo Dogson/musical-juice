@@ -1,3 +1,5 @@
+@import 'src/styles/global.scss';
+
 @keyframes slow-blink {
   0% {
     opacity: 1;
@@ -25,6 +27,16 @@
 
     &__loading {
       animation: slow-blink 2s infinite;
+    }
+  }
+}
+
+@media (max-width: 800px) {
+  .PlayerPage {
+    &_logoContainer {
+      transform: scale(0.8);
+      top: -155px;
+      left: -155px;
     }
   }
 }

@@ -102,7 +102,6 @@
     }
   }
 
-  &:active,
   &__active {
     box-shadow: unset !important;
     background: var(--color-main);
@@ -123,6 +122,33 @@
       svg {
         stroke: var(--color-secondary);
         fill: var(--color-secondary);
+      }
+    }
+  }
+}
+
+@media (hover: none) {
+  .Button {
+    &:hover {
+      background: var(--color-secondary);
+      color: var(--color-secondary);
+      @include text-stroke(var(--color-main));
+
+      svg {
+        fill: none;
+        stroke: var(--color-main);
+      }
+    }
+
+    &__active {
+      box-shadow: unset !important;
+      background: var(--color-main) !important;
+      text-shadow: none !important;
+      color: var(--color-secondary) !important;
+
+      svg {
+        stroke: var(--color-secondary) !important;
+        fill: var(--color-secondary) !important;
       }
     }
   }
