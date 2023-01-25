@@ -6,14 +6,17 @@
   box-shadow: 0 11px 10px rgba(0, 0, 0, 0.5);
   width: 70px;
   height: 90px;
-  transition: height 0.1s, width 0.1s, box-shadow 0.2s;
+  transition: height 0.1s, width 0.1s, border 0.2s;
   background: rgba(97, 28, 53, 0.75);
   border-radius: 20px 0 0 20px;
   cursor: pointer;
+  border: 1px solid transparent;
+  border-right: none;
 
   &:hover {
     transition: all 0.2s;
-    box-shadow: 0 11px 10px rgba(66, 255, 0, 0.5);
+    border: 1px solid var(--color-main);
+    border-right: none;
   }
 
   &__opened {
@@ -22,7 +25,8 @@
     max-width: 90vw;
     cursor: default;
     transition: all 0.2s;
-    box-shadow: 0 11px 10px rgba(66, 255, 0, 0.5);
+    border: 1px solid var(--color-main);
+    border-right: none;
   }
 
   &_container {
