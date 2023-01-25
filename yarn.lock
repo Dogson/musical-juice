@@ -8875,6 +8875,11 @@ known-css-properties@^0.21.0:
   resolved "https://registry.yarnpkg.com/known-css-properties/-/known-css-properties-0.21.0.tgz#15fbd0bbb83447f3ce09d8af247ed47c68ede80d"
   integrity sha512-sZLUnTqimCkvkgRS+kbPlYW5o8q5w1cu+uIisKpEWkj31I8mx8kNG162DwRav8Zirkva6N5uoFsm9kzK4mUXjw==
 
+kofi-button@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/kofi-button/-/kofi-button-1.1.1.tgz#79d34e65697ee8bb93467529b7d905e715c07bc1"
+  integrity sha512-6LjKH46C5L0WXgd7lcCCZ6sZyrtjv7tLA5XLBnuayyzrSDRP6yQKt00zL7IH2QxixqQtyxAqpefwUglmmtD9IA==
+
 language-subtag-registry@~0.3.2:
   version "0.3.22"
   resolved "https://registry.yarnpkg.com/language-subtag-registry/-/language-subtag-registry-0.3.22.tgz#2e1500861b2e457eba7e7ae86877cbd08fa1fd1d"

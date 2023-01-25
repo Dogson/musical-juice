@@ -131,6 +131,14 @@ const useAppContextManager = (): IUseAppContextManager => {
             console.warn(`URL : https://www.youtube.com/watch?v=${mix.id}`);
           }
         });
+
+        const mixesId = mixes.map((mix) => mix.id);
+        mixesId.some((id) => {
+          if (mixesId.indexOf(id) !== mixesId.lastIndexOf(id)) {
+            console.warn(`There is a duplicate video id : ${id}`);
+          }
+          return false;
+        });
       }
     };
   }, [eWindow, mixes]);

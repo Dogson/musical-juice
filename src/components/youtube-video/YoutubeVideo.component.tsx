@@ -259,8 +259,8 @@ const YoutubeVideo: React.FC = () => {
                   styles.YoutubeVideo_trackInfos,
                   'animate__animated',
                   skipTrackAnim === 'next'
-                    ? 'animate__fadeInLeft'
-                    : 'animate__fadeInRight',
+                    ? 'animate__fadeInRight'
+                    : 'animate__fadeInLeft',
                 )}
               >
                 <div className={styles.YoutubeVideo_trackPosition}>
@@ -276,8 +276,8 @@ const YoutubeVideo: React.FC = () => {
                   styles.YoutubeVideo_trackInfos,
                   'animate__animated',
                   skippingTrack === 'next'
-                    ? 'animate__fadeOutRight'
-                    : 'animate__fadeOutLeft',
+                    ? 'animate__fadeOutLeft'
+                    : 'animate__fadeOutRight',
                 )}
               >
                 <div className={styles.YoutubeVideo_trackPosition}>

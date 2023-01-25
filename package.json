@@ -30,6 +30,7 @@
     "gatsby-source-filesystem": "^2.3.11",
     "gatsby-transformer-remark": "^2.8.15",
     "gatsby-transformer-sharp": "^3.11.0",
+    "kofi-button": "^1.1.1",
     "moment": "^2.26.0",
     "netlify-cms": "^2.10.50",
     "node-sass": "^6.0.1",

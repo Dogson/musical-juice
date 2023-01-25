@@ -17,6 +17,37 @@
   background-size: 100%;
   background: black;
 
+  &_kofiContainer {
+    z-index: 100;
+    position: absolute;
+    right: 20px;
+    top: 40px;
+    > div > div {
+      min-width: 20px;
+      width: 33px;
+      transition: all 0.2s ease-in;
+
+      > a > span > img {
+        animation-duration: 0s !important;
+        width: 20px;
+        margin-right: 9px !important;
+        margin-left: 9px !important;
+        box-sizing: border-box;
+      }
+    }
+
+    &:hover {
+      > div > div {
+        min-width: 20px;
+        width: 150px;
+
+        > a > span > img {
+          animation-duration: 3s !important;
+        }
+      }
+    }
+  }
+
   &_content {
     position: absolute;
     width: 100%;
