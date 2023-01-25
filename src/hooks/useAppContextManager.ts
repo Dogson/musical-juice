@@ -13,7 +13,8 @@ import parseYoutubeDescription from '../utils/parseYoutubeDescription';
 import { IUseAppContextManager } from './useAppContextManager.types';
 
 const useAppContextManager = (): IUseAppContextManager => {
-  const eWindow: IWindow = window as unknown as IWindow;
+  const eWindow: IWindow | undefined =
+    typeof window !== `undefined` ? (window as unknown as IWindow) : undefined;
   const {
     mixes,
     mixIdx,
@@ -117,30 +118,31 @@ const useAppContextManager = (): IUseAppContextManager => {
       };
     }
 
-    eWindow.checkWhichMixesAreDown = () => {
-      console.log('CHECKING IF SOME MIXES ARE DOWN');
-      if (!mixes) {
-        console.warn('Wait for app to initialize and try again.');
-      } else {
-        mixes.forEach((mix) => {
-          validVideoId(mix);
-          const tracks = parseYoutubeDescription(mix.description, false);
-          if (!tracks || tracks.length < 3) {
-            console.warn("Can't generate tracks for this mix :");
-            console.warn(`ID : ${mix.id}`);
-            console.warn(`URL : https://www.youtube.com/watch?v=${mix.id}`);
-          }
-        });
+    if (eWindow)
+      eWindow.checkWhichMixesAreDown = () => {
+        console.log('CHECKING IF SOME MIXES ARE DOWN');
+        if (!mixes) {
+          console.warn('Wait for app to initialize and try again.');
+        } else {
+          mixes.forEach((mix) => {
+            validVideoId(mix);
+            const tracks = parseYoutubeDescription(mix.description, false);
+            if (!tracks || tracks.length < 3) {
+              console.warn("Can't generate tracks for this mix :");
+              console.warn(`ID : ${mix.id}`);
+              console.warn(`URL : https://www.youtube.com/watch?v=${mix.id}`);
+            }
+          });
 
-        const mixesId = mixes.map((mix) => mix.id);
-        mixesId.some((id) => {
-          if (mixesId.indexOf(id) !== mixesId.lastIndexOf(id)) {
-            console.warn(`There is a duplicate video id : ${id}`);
-          }
-          return false;
-        });
-      }
-    };
+          const mixesId = mixes.map((mix) => mix.id);
+          mixesId.some((id) => {
+            if (mixesId.indexOf(id) !== mixesId.lastIndexOf(id)) {
+              console.warn(`There is a duplicate video id : ${id}`);
+            }
+            return false;
+          });
+        }
+      };
   }, [eWindow, mixes]);
 
   /**
