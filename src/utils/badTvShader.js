@@ -165,7 +165,6 @@ const initTvShader = (containerClassName, backgroundVideo, staticOnly) => {
       video.pause();
       badTVPass.uniforms['distortion'].value = 1.7;
       badTVPass.uniforms['distortion2'].value = 1;
-      badTVPass.uniforms['rollSpeed'].value = 0.05;
       staticPass.uniforms['amount'].value = 0.1;
     }
   };
@@ -179,7 +178,6 @@ const initTvShader = (containerClassName, backgroundVideo, staticOnly) => {
       });
       badTVPass.uniforms['distortion'].value = 0;
       badTVPass.uniforms['distortion2'].value = 0;
-      badTVPass.uniforms['rollSpeed'].value = 0;
       staticPass.uniforms['amount'].value = 0;
     }
   };

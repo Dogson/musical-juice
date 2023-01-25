@@ -51,11 +51,11 @@
   }
 
   &_trackTitle {
-    font-size: 35px;
+    font-size: var(--size-big);
   }
 
   &_trackPosition {
-    font-size: 22px;
+    font-size: var(--size-small);
     opacity: 0.6;
   }
 
@@ -69,7 +69,7 @@
 
     h3 {
       font-family: BasicLazer, sans-serif;
-      font-size: 30px;
+      font-size: var(--size-big) px;
       letter-spacing: 7px;
       color: var(--color-secondary);
       @include text-stroke(var(--color-main));
@@ -77,16 +77,17 @@
     }
 
     h1 {
-      font-weight: 300;
+      font-weight: 200;
       font-family: 'Lazer84', sans-serif;
-      font-size: 40px;
-      text-shadow: 0 8px 18px var(--color-secondary);
+      font-size: var(--size-bigger);
+      text-shadow: 0 4px 4px var(--color-secondary);
       letter-spacing: 4px;
       word-spacing: 6px;
+      max-width: 800px;
       margin-top: 0;
+      color: var(--color-main);
       margin-bottom: 10px;
-      -webkit-text-stroke: 1px var(--color-main);
-      color: transparent;
+      text-align: center;
     }
   }
 
@@ -136,5 +137,12 @@
     right: 0;
     top: 50%;
     transform: translateY(-50%);
+  }
+
+  &_nextMixBtn {
+    position: absolute;
+    transform: scale(0.8);
+    right: 20px;
+    bottom: 31px;
   }
 }

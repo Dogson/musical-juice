@@ -5,28 +5,29 @@
   width: 100vw;
   height: 100vh;
   @include flex-column-full-center();
-  font-size: 40px;
+  font-size: var(--size-bigger);
   background: var(--color-dark);
 
   &_logoContainer {
     display: flex;
     flex-direction: column;
     align-items: center;
+    margin-top: -50px;
   }
 
-  &_description {
-    font-size: 30px;
+  &_options {
+    margin-top: -10px;
   }
 
-  &_moods {
-    margin-top: 100px;
-    font-size: 18px;
+  &_optionBlock {
     display: flex;
+    font-size: var(--size-big);
     flex-direction: column;
     align-items: center;
+    margin-bottom: 15px;
   }
 
-  &_moodsButtons {
+  &_optionsBlockButtons {
     display: flex;
 
     button {

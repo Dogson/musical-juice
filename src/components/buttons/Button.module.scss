@@ -11,7 +11,7 @@
   color: var(--color-secondary);
   @include text-stroke(var(--color-main));
   font-family: Lazer84, sans-serif;
-  font-size: 20px;
+  font-size: var(--size-normal);
   box-shadow: 0 4px 4px #000;
   cursor: pointer;
   transition: all 0.2s;
@@ -20,9 +20,76 @@
     transition: all 0.2s;
   }
 
+  &__noBackground {
+    background: none !important;
+    box-shadow: none !important;
+    border: none !important;
+    position: relative;
+
+    > div {
+      position: relative;
+      margin-left: 20px;
+      font-family: BasicLazer, sans-serif;
+      font-size: var(--size-big);
+      text-shadow: none;
+      color: var(--color-main);
+
+      &::after {
+        position: absolute;
+        content: '';
+        width: 100%;
+        height: 1.5px;
+        padding-left: 3px;
+        padding-right: 3px;
+        margin-left: -3px;
+        bottom: -4px;
+        left: 0;
+        background: var(--color-main);
+        transition: all 0.2s ease-in;
+      }
+    }
+
+    svg {
+      stroke: var(--color-main) !important;
+      fill: var(--color-main) !important;
+    }
+
+    &:hover {
+      > div {
+        @include text-stroke(var(--color-main));
+        color: var(--color-secondary) !important;
+        &::after {
+          padding-left: 43px;
+          margin-left: -43px;
+        }
+      }
+    }
+
+    &:active,
+    &__active {
+      background: none !important;
+      box-shadow: none !important;
+      border: none !important;
+    }
+  }
+
   &__small {
     min-width: 75px;
     height: 50px;
+  }
+
+  &__disabled {
+    opacity: 0.2;
+
+    &:hover {
+      background: var(--color-secondary) !important;
+      color: var(--color-secondary) !important;
+      @include text-stroke(var(--color-main));
+
+      svg {
+        stroke: transparent !important;
+      }
+    }
   }
 
   &:hover {
@@ -38,13 +105,25 @@
   &:active,
   &__active {
     box-shadow: unset !important;
-    background: var(--color-main) !important;
+    background: var(--color-main);
     text-shadow: none !important;
-    color: var(--color-secondary) !important;
+    color: var(--color-secondary);
 
     svg {
-      stroke: var(--color-secondary) !important;
-      fill: var(--color-secondary) !important;
+      stroke: var(--color-secondary);
+      fill: var(--color-secondary);
+    }
+
+    &:hover {
+      box-shadow: unset !important;
+      background: var(--color-main);
+      text-shadow: none !important;
+      color: var(--color-secondary);
+
+      svg {
+        stroke: var(--color-secondary);
+        fill: var(--color-secondary);
+      }
     }
   }
 }

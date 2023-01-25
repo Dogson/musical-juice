@@ -10,7 +10,7 @@ export interface IAppContext {
   atmospheres: string[];
   currentAtmosphere?: string;
   setAtmospheres: (atmospheres: string[]) => void;
-  setCurrentAtmosphere: (atmosphere: string) => void;
+  setCurrentAtmosphere: (atmosphere?: string) => void;
   mixes: IMix[];
   currentMix?: IMix;
   setMixes: (mixes: IMix[]) => void;

@@ -250,7 +250,6 @@ const YoutubeVideo: React.FC = () => {
                 {currentMix?.title}
               </h1>
             </div>
-            <Button onClick={nextMix} icon={Icons.Shuffle} size="small" />
           </div>
 
           <div className={styles.YoutubeVideo_bottomInfos}>
@@ -312,6 +311,18 @@ const YoutubeVideo: React.FC = () => {
                 size="small"
                 icon={Icons.Forward}
               />
+            </div>
+            <div className={styles.YoutubeVideo_nextMixBtn}>
+              <div
+                className={classNames('animate__animated', 'animate__fadeInUp')}
+              >
+                <Button
+                  onClick={nextMix}
+                  icon={Icons.Shuffle}
+                  label={<div>change mix</div>}
+                  noBackground
+                />
+              </div>
             </div>
           </div>
           <div className={styles.YoutubeVideo_settings}>

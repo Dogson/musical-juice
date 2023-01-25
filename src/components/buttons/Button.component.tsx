@@ -31,6 +31,8 @@ const Button: React.FC<{
   size?: 'small' | 'normal';
   active?: boolean;
   timeout?: number;
+  disabled?: boolean;
+  noBackground?: boolean;
 }> = ({
   onClick,
   label = '',
@@ -38,11 +40,14 @@ const Button: React.FC<{
   size = 'normal',
   active = false,
   timeout = 0,
+  disabled = false,
+  noBackground = false,
 }) => {
   const [play] = useSound(buttonPressSound);
   const [hasClicked, setHasClicked] = useState(false);
 
   const handleClick = () => {
+    if (disabled) return;
     setHasClicked(true);
     setTimeout(() => {
       onClick();
@@ -75,12 +80,15 @@ const Button: React.FC<{
 
   return (
     <button
+      disabled={disabled}
       onClick={handleClick}
       onMouseDown={() => play()}
       type="button"
       className={classNames(styles.Button, {
         [styles.Button__small]: size === 'small',
         [styles.Button__active]: active || hasClicked,
+        [styles.Button__disabled]: disabled,
+        [styles.Button__noBackground]: noBackground,
       })}
     >
       {iconComponent && iconComponent}

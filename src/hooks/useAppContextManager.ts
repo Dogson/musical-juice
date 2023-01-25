@@ -1,12 +1,19 @@
+/* eslint-disable no-console */
 import { useCallback, useContext, useEffect } from 'react';
 
-import appData from '../../static/mocks/data.json';
+import atmospheresData from '../../static/data/atmospheres.json';
+import chillMixesData from '../../static/data/chill-mixes.json';
+import groovyMixesData from '../../static/data/groovy-mixes.json';
+import lofiMixesData from '../../static/data/lofi-mixes.json';
+import moodsData from '../../static/data/moods.json';
 import AppContext from '../context/app-context/AppContext';
 import { IMix } from '../typings/Mixes.types';
+import { IWindow } from '../typings/Window.types';
 import parseYoutubeDescription from '../utils/parseYoutubeDescription';
 import { IUseAppContextManager } from './useAppContextManager.types';
 
 const useAppContextManager = (): IUseAppContextManager => {
+  const eWindow: IWindow = window as unknown as IWindow;
   const {
     mixes,
     mixIdx,
@@ -71,26 +78,81 @@ const useAppContextManager = (): IUseAppContextManager => {
     [currentMood, mixes, setMixIdx, setMixPlaylist],
   );
 
+  const getMixes = useCallback(
+    (mixData: IMix[], mood: string) =>
+      mixData.map((mix: IMix) => ({
+        ...mix,
+        mood,
+        tracks: parseYoutubeDescription(mix.description, false),
+        url: `https://youtube.com/v/${mix.id}`,
+      })),
+    [],
+  );
+
+  const setDownMixesCheckFunction = useCallback(() => {
+    function checkThumbnail(width: number, mix: IMix) {
+      // HACK a mq thumbnail has width of 320.
+      // if the video does not exist(therefore thumbnail don't exist), a default thumbnail of 120 width is returned.
+      if (width === 120) {
+        console.warn(
+          `This ${mix.mood.toUpperCase()} mix does not exist anymore.`,
+        );
+        console.warn(`ID : ${mix.id}`);
+        console.warn(`URL : https://www.youtube.com/watch?v=${mix.id}`);
+      }
+    }
+
+    function validVideoId(mix: IMix) {
+      const img = new Image();
+      img.src = `http://img.youtube.com/vi/${mix.id}/mqdefault.jpg`;
+      img.onload = () => {
+        checkThumbnail(img.width, mix);
+      };
+      img.onerror = () => {
+        console.warn(
+          `This ${mix.mood.toUpperCase()} mix does not exist anymore.`,
+        );
+        console.warn(`ID : ${mix.id}`);
+        console.warn(`URL : https://www.youtube.com/watch?v=${mix.id}`);
+      };
+    }
+
+    eWindow.checkWhichMixesAreDown = () => {
+      console.log('CHECKING IF SOME MIXES ARE DOWN');
+      if (!mixes) {
+        console.warn('Wait for app to initialize and try again.');
+      } else {
+        mixes.forEach((mix) => {
+          validVideoId(mix);
+          const tracks = parseYoutubeDescription(mix.description, false);
+          if (!tracks || tracks.length < 3) {
+            console.warn("Can't generate tracks for this mix :");
+            console.warn(`ID : ${mix.id}`);
+            console.warn(`URL : https://www.youtube.com/watch?v=${mix.id}`);
+          }
+        });
+      }
+    };
+  }, [eWindow, mixes]);
+
   /**
    * Load app data (mixes, atmospheres and moods) with gatsby GraphQL queries
    */
   const loadData = useCallback(() => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    setMixes(
-      (appData.mixes as IMix[]).map((mix: IMix) => ({
-        ...mix,
-        tracks: parseYoutubeDescription(mix.description, false),
-        url: `https://youtube.com/v/${mix.id}`,
-      })),
-    );
+    setMixes([
+      ...getMixes(chillMixesData as unknown as IMix[], 'chill'),
+      ...getMixes(groovyMixesData as unknown as IMix[], 'groovy'),
+      ...getMixes(lofiMixesData as unknown as IMix[], 'lofi'),
+    ]);
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    setMoods(appData.moods);
+    setMoods(moodsData);
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    setAtmospheres(appData.atmospheres);
-  }, [setAtmospheres, setMixes, setMoods]);
+    setAtmospheres(atmospheresData);
+  }, [getMixes, setAtmospheres, setMixes, setMoods]);
 
   /**
    * Go to the next mix in the playlist
@@ -156,6 +218,13 @@ const useAppContextManager = (): IUseAppContextManager => {
     }
     randomizePlaylist();
   }, [currentMood, mixPlaylist, randomizePlaylist]);
+
+  /**
+   * Setting global youtube URL up function
+   */
+  useEffect(() => {
+    setDownMixesCheckFunction();
+  }, [setDownMixesCheckFunction]);
 
   return {
     moods,
