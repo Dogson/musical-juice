@@ -80,6 +80,7 @@
 
   &__disabled {
     opacity: 0.2;
+    cursor: default;
 
     &:hover {
       background: var(--color-secondary) !important;
@@ -87,7 +88,8 @@
       @include text-stroke(var(--color-main));
 
       svg {
-        stroke: transparent !important;
+        fill: none !important;
+        stroke: var(--color-main) !important;
       }
     }
   }

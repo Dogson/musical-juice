@@ -300,16 +300,21 @@ const YoutubeVideo: React.FC = () => {
                 onClick={handlePreviousTrack}
                 size="small"
                 icon={Icons.Backward}
+                active={skippingTrack === 'previous'}
+                disabled={!track || track.position === 1}
               />
               <Button
                 onClick={handlePauseClick}
                 size="small"
                 icon={videoPaused ? Icons.Play : Icons.Pause}
+                active={videoPaused}
               />
               <Button
                 onClick={handleNextTrack}
                 size="small"
                 icon={Icons.Forward}
+                active={skippingTrack === 'next'}
+                disabled={!track || track.position === totalTracks}
               />
             </div>
             <div className={styles.YoutubeVideo_nextMixBtn}>
