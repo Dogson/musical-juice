@@ -1,24 +1,16 @@
 import classNames from 'classnames';
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import {
-  AiFillFastForward,
-  AiFillForward,
-  AiFillPauseCircle,
-  AiFillPlayCircle,
-} from 'react-icons/ai';
 import YouTube from 'react-youtube';
 import useSound from 'use-sound';
 
-import buttonPressSound from '../../assets/button-press.mp3';
 import AppContext from '../../context/app-context/AppContext';
 import useAppContextManager from '../../hooks/useAppContextManager';
 import useTracksManager from '../../hooks/useTracksManager';
 import { ITrack } from '../../typings/Tracks.types';
 import { IWindow } from '../../typings/Window.types';
 import { initTvShader } from '../../utils/badTvShader';
-import AtmosphereSelector from '../atmospheres/AtmosphereSelector.component';
-import Button from '../buttons/Button.component';
-import MoodSelector from '../moods/MoodSelector.component';
+import Button, { Icons } from '../buttons/Button.component';
+import SettingsMenu from '../settings-menu/SettingsMenu.component';
 import fastForwardSound from './assets/fast-forward.wav';
 import staticSound from './assets/static.wav';
 import * as styles from './YoutubeVideo.module.scss';
@@ -36,12 +28,21 @@ const YoutubeVideo: React.FC = () => {
     fastForwardSound,
     { loop: true, interrupt: true },
   );
-  const [playBtnSound] = useSound(buttonPressSound);
-  const { track, nextTrack, checkTrackWithTimestamp, previousTrackTitle } =
-    useTracksManager(currentMix?.tracks as ITrack[]);
+  const {
+    track,
+    nextTrack,
+    previousTrack,
+    checkTrackWithTimestamp,
+    previousTrackTitle,
+    nextTrackTitle,
+    totalTracks,
+  } = useTracksManager(currentMix?.tracks as ITrack[]);
   const [player, setPlayer] = useState<YT.Player>();
   const [author, setAuthor] = useState('');
-  const [skippingTrack, setSkippingTrack] = useState<boolean>();
+  const [skippingTrack, setSkippingTrack] = useState<
+    'next' | 'previous' | null
+  >();
+  const [skipTrackAnim, setSkipTrackAnim] = useState<'next' | 'previous'>();
   const [videoLoaded, setVideoLoaded] = useState<boolean>(false);
   const timeoutRef = useRef<number>();
   const [videoPaused, setVideoPaused] = useState<boolean>();
@@ -54,7 +55,7 @@ const YoutubeVideo: React.FC = () => {
    */
   const handleReady = (e: YT.PlayerEvent) => {
     setPlayer(e.target);
-    e.target.seekTo(0, true);
+    e.target.seekTo(track?.start || 0, true);
     e.target.playVideo();
   };
 
@@ -97,7 +98,7 @@ const YoutubeVideo: React.FC = () => {
       setManualInterval((v) => v + 1);
     }, 1000);
     if (skippingTrack) {
-      setSkippingTrack(false);
+      setSkippingTrack(null);
       setAtmospherePaused(true);
       return;
     }
@@ -129,11 +130,11 @@ const YoutubeVideo: React.FC = () => {
     // TODO handleError
   };
 
-  const handleNextTrack = () => {
+  const handleGoToTrack = (direction: 'previous' | 'next') => {
     if (!player) return;
-    const next = nextTrack();
-    if (next) {
-      setSkippingTrack(true);
+    const goToTrack = direction === 'previous' ? previousTrack() : nextTrack();
+    if (goToTrack) {
+      setSkippingTrack(direction);
       setAtmospherePaused(true);
       if (checkTrackNameInterval.current) {
         clearInterval(checkTrackNameInterval.current);
@@ -141,13 +142,22 @@ const YoutubeVideo: React.FC = () => {
         setManualInterval(0);
       }
       player.playVideo();
-      player.seekTo(next.start, true);
+      player.seekTo(goToTrack.start, true);
     }
+  };
+
+  const handleNextTrack = () => {
+    setSkipTrackAnim('next');
+    handleGoToTrack('next');
+  };
+
+  const handlePreviousTrack = () => {
+    setSkipTrackAnim('previous');
+    handleGoToTrack('previous');
   };
 
   const handlePauseClick = () => {
     if (!player) return;
-    playBtnSound();
     setVideoPaused(!videoPaused);
     setAtmospherePaused(!videoPaused);
     if (videoPaused) {
@@ -228,84 +238,100 @@ const YoutubeVideo: React.FC = () => {
       {videoLoaded && (
         <div className={styles.YoutubeVideo_interactiveLayer} role="button">
           <div className={styles.YoutubeVideo_topInfos}>
-            <h1 className="animate__animated animate__fadeIn">
-              {currentMix?.title}
-            </h1>
-            <h3 className="animate__animated animate__fadeIn">
-              par{' '}
+            <h3 className="animate__animated animate__fadeInDown">
               {currentMix && (
                 <a href={currentMix.url} target="_blank" rel="noreferrer">
                   {author}
                 </a>
               )}
             </h3>
-          </div>
-          <div className={styles.YoutubeVideo_atmosphereSelector}>
-            <AtmosphereSelector />
-          </div>
-          <div className={styles.YoutubeVideo_moodSelector}>
-            <MoodSelector />
+            <div className={styles.YoutubeVideo_titleWrapper}>
+              <h1 className="animate__animated animate__jackInTheBox">
+                {currentMix?.title}
+              </h1>
+            </div>
           </div>
 
           <div className={styles.YoutubeVideo_bottomInfos}>
             {!skippingTrack ? (
               <h2
                 className={classNames(
-                  styles.YoutubeVideo_trackTitle,
-                  'animate__animated animate__fadeInLeft',
+                  styles.YoutubeVideo_trackInfos,
+                  'animate__animated',
+                  skipTrackAnim === 'next'
+                    ? 'animate__fadeInRight'
+                    : 'animate__fadeInLeft',
                 )}
               >
-                {track?.title}
+                <div className={styles.YoutubeVideo_trackPosition}>
+                  Track {track?.position}/{totalTracks}
+                </div>
+                <div className={styles.YoutubeVideo_trackTitle}>
+                  {track?.title}
+                </div>
               </h2>
             ) : (
               <h2
                 className={classNames(
-                  styles.YoutubeVideo_trackTitle,
-                  'animate__animated animate__fadeOutRight',
+                  styles.YoutubeVideo_trackInfos,
+                  'animate__animated',
+                  skippingTrack === 'next'
+                    ? 'animate__fadeOutLeft'
+                    : 'animate__fadeOutRight',
                 )}
               >
-                {previousTrackTitle}
+                <div className={styles.YoutubeVideo_trackPosition}>
+                  Track{' '}
+                  {track &&
+                    (skippingTrack === 'next'
+                      ? track.position - 1
+                      : track.position + 1)}
+                  /{totalTracks}
+                </div>
+                <div className={styles.YoutubeVideo_trackTitle}>
+                  {skippingTrack === 'next'
+                    ? previousTrackTitle
+                    : nextTrackTitle}
+                </div>
               </h2>
             )}
             <div className={styles.YoutubeVideo_playerButtons}>
               <Button
+                onClick={handlePreviousTrack}
+                size="small"
+                icon={Icons.Backward}
+                active={skippingTrack === 'previous'}
+                disabled={!track || track.position === 1}
+              />
+              <Button
                 onClick={handlePauseClick}
-                label={
-                  <span className={styles.YoutubeVideo_btn}>
-                    {videoPaused ? (
-                      <AiFillPlayCircle
-                        className={styles.YoutubeVideo_btnIcon}
-                      />
-                    ) : (
-                      <AiFillPauseCircle
-                        className={styles.YoutubeVideo_btnIcon}
-                      />
-                    )}
-                    {videoPaused ? 'Play' : 'Pause'}
-                  </span>
-                }
+                size="small"
+                icon={videoPaused ? Icons.Play : Icons.Pause}
+                active={videoPaused}
               />
               <Button
                 onClick={handleNextTrack}
-                label={
-                  <span className={styles.YoutubeVideo_btn}>
-                    <AiFillForward className={styles.YoutubeVideo_btnIcon} />
-                    Morceau suivant
-                  </span>
-                }
-              />
-              <Button
-                onClick={nextMix}
-                label={
-                  <span className={styles.YoutubeVideo_btn}>
-                    <AiFillFastForward
-                      className={styles.YoutubeVideo_btnIcon}
-                    />
-                    Mix suivant
-                  </span>
-                }
+                size="small"
+                icon={Icons.Forward}
+                active={skippingTrack === 'next'}
+                disabled={!track || track.position === totalTracks}
               />
             </div>
+            <div className={styles.YoutubeVideo_nextMixBtn}>
+              <div
+                className={classNames('animate__animated', 'animate__fadeInUp')}
+              >
+                <Button
+                  onClick={nextMix}
+                  icon={Icons.Shuffle}
+                  label={<div>change mix</div>}
+                  noBackground
+                />
+              </div>
+            </div>
+          </div>
+          <div className={styles.YoutubeVideo_settings}>
+            <SettingsMenu />
           </div>
         </div>
       )}

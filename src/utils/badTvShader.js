@@ -113,7 +113,7 @@ const initTvShader = (containerClassName, backgroundVideo, staticOnly) => {
     show: true,
     distortion: 0,
     distortion2: 0,
-    speed: 0.3,
+    speed: 0.1,
     rollSpeed: 0,
   };
 
@@ -165,6 +165,7 @@ const initTvShader = (containerClassName, backgroundVideo, staticOnly) => {
       video.pause();
       badTVPass.uniforms['distortion'].value = 1.7;
       badTVPass.uniforms['distortion2'].value = 1;
+      staticPass.uniforms['amount'].value = 0.1;
     }
   };
   window.pauseVideo = new Event('pauseVideo');
@@ -177,6 +178,7 @@ const initTvShader = (containerClassName, backgroundVideo, staticOnly) => {
       });
       badTVPass.uniforms['distortion'].value = 0;
       badTVPass.uniforms['distortion2'].value = 0;
+      staticPass.uniforms['amount'].value = 0;
     }
   };
   window.playVideo = new Event('playVideo');

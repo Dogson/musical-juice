@@ -59,6 +59,7 @@ const makeTrackParser = (
       title = title.substr(0, substrIdx);
 
       tracks.push({
+        position: i + 1,
         start: hours * 60 * 60 + minutes * 60 + seconds,
         title: title.trim(),
       });
@@ -77,7 +78,7 @@ const addM = (regex: RegExp) => {
 
 // $timestamp $title
 const lawfulParser = makeTrackParser(
-  /^0:00/m,
+  /\d:\d\d/,
   /^(?:(\d+):)?(\d+):(\d+)\s+(.*?)$/,
   0,
   3,

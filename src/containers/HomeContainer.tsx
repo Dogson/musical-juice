@@ -1,14 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 
-import AtmospheresEffects from '../components/atmospheres/AtmospheresEffects.component';
 import Homepage from '../components/homepage/Homepage.component';
-import YoutubeVideo from '../components/youtube-video/YoutubeVideo.component';
 import useAppContextManager from '../hooks/useAppContextManager';
 import PageLayout from '../layout/page/Page.layout';
 
 const HomeContainer: React.FC = () => {
-  const { loadData, currentMix } = useAppContextManager();
-  const [hasClicked, setHasClicked] = useState(false);
+  const { loadData } = useAppContextManager();
 
   useEffect(() => {
     loadData();
@@ -16,14 +13,7 @@ const HomeContainer: React.FC = () => {
 
   return (
     <PageLayout>
-      {!hasClicked || !currentMix ? (
-        <Homepage onClick={() => setHasClicked(true)} />
-      ) : (
-        <>
-          <YoutubeVideo key={currentMix.id} />
-          <AtmospheresEffects />
-        </>
-      )}
+      <Homepage />
     </PageLayout>
   );
 };

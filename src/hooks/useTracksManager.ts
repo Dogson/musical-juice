@@ -24,6 +24,16 @@ const useTracksManager = (tracks: ITrack[]): IUseTracksManager => {
     return null;
   }, [currentTrackIdx, loadingNextTrack, nextMix, tracks]);
 
+  const previousTrack = useCallback(() => {
+    if (!tracks || loadingNextTrack) return null;
+    setLoadingNextTrack(true);
+    if (currentTrackIdx > 0) {
+      setCurrentTrackIdx((v) => v - 1);
+      return tracks[currentTrackIdx - 1];
+    }
+    return null;
+  }, [currentTrackIdx, loadingNextTrack, tracks]);
+
   const checkTrackWithTimestamp = useCallback(
     (timestamp: number) => {
       const nextTrackIdx = tracks.findIndex((song) => song.start > timestamp);
@@ -41,11 +51,20 @@ const useTracksManager = (tracks: ITrack[]): IUseTracksManager => {
     return '';
   }, [currentTrackIdx, tracks]);
 
+  const nextTrackTitle = useMemo(() => {
+    if (currentTrackIdx < tracks.length - 1)
+      return tracks[currentTrackIdx + 1].title;
+    return '';
+  }, [currentTrackIdx, tracks]);
+
   return {
     nextTrack,
+    previousTrack,
     track: tracks ? tracks[currentTrackIdx] : undefined,
     checkTrackWithTimestamp,
     previousTrackTitle,
+    nextTrackTitle,
+    totalTracks: tracks.length,
   };
 };
 

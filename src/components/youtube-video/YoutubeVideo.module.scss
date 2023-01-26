@@ -29,6 +29,7 @@
 
   &_videoContainer {
     z-index: 1;
+    overflow: hidden;
   }
 
   &_interactiveLayer {
@@ -44,20 +45,65 @@
     opacity: 0;
   }
 
-  &_trackTitle {
+  &_trackInfos {
+    font-weight: 300;
     @include flex-column-full-center();
+    letter-spacing: 3px;
+  }
+
+  &_trackTitle {
+    font-size: var(--size-big);
+    text-align: center;
+  }
+
+  &_trackPosition {
+    font-size: var(--size-small);
+    opacity: 0.6;
+  }
+
+  &_titleWrapper {
+    transform: rotate(-4.49deg);
   }
 
   &_topInfos {
     margin-top: 40px;
     @include flex-column-full-center();
+
+    h3 {
+      font-family: BasicLazer, sans-serif;
+      font-size: var(--size-big) px;
+      letter-spacing: 7px;
+      color: var(--color-secondary);
+      @include text-stroke(var(--color-main));
+      font-weight: 300;
+    }
+
+    h1 {
+      font-weight: 200;
+      font-family: 'Lazer84', sans-serif;
+      font-size: var(--size-bigger);
+      text-shadow: 0 4px 4px var(--color-secondary);
+      letter-spacing: 4px;
+      word-spacing: 6px;
+      max-width: min(800px, 80vw);
+      margin-top: 0;
+      color: var(--color-main);
+      margin-bottom: 10px;
+      text-align: center;
+    }
   }
 
   &_bottomInfos {
+    @include flex-column-full-center();
+    margin-bottom: 50px;
+    max-width: 90vw;
   }
 
   &_playerButtons {
-    @include flex-row-full-center();
+    @include flex-row();
+    width: 270px;
+    align-items: center;
+    justify-content: space-between;
   }
 
   &_btn {
@@ -83,5 +129,37 @@
 
   &_moodSelector {
     right: 100px;
+  }
+
+  a {
+    color: inherit;
+  }
+
+  &_settings {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  &_nextMixBtn {
+    position: absolute;
+    transform: scale(0.8);
+    right: 20px;
+    bottom: 31px;
+  }
+}
+
+@media (max-width: 700px) {
+  .YoutubeVideo {
+    &_nextMixBtn {
+      right: unset;
+      bottom: unset;
+      position: relative;
+    }
+
+    &_bottomInfos {
+      margin-bottom: 20px;
+    }
   }
 }
