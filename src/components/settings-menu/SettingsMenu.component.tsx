@@ -1,5 +1,6 @@
 import classNames from 'classnames';
 import React, { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import useAppContextManager from '../../hooks/useAppContextManager';
 import useOutsideClickHandler from '../../hooks/useOutsideClickHandler';
@@ -22,6 +23,7 @@ const SettingsMenu: React.FC<{
     changeMood,
     mixes,
   } = useAppContextManager();
+  const { t } = useTranslation();
 
   useOutsideClickHandler(containerRef, () => {
     setOpened(false);
@@ -46,7 +48,9 @@ const SettingsMenu: React.FC<{
           )}
         >
           <div className={styles.SettingsMenu_row}>
-            <div className={styles.SettingsMenu_rowLabel}>Change channel</div>
+            <div className={styles.SettingsMenu_rowLabel}>
+              {t('settings.changeChannel')}
+            </div>
             <div className={styles.SettingsMenu_buttons}>
               {moods.map((mood) => (
                 <Button
@@ -54,8 +58,8 @@ const SettingsMenu: React.FC<{
                   label={
                     mood === 'favs' ? (
                       <div className={styles.SettingsMenu_moodFavBtn}>
-                        <small>Your</small>
-                        <div>Favs</div>
+                        <small>{t('your')}</small>
+                        <div>{t('favs')}</div>
                       </div>
                     ) : (
                       mood
@@ -70,7 +74,7 @@ const SettingsMenu: React.FC<{
           </div>
           <div className={styles.SettingsMenu_row}>
             <div className={styles.SettingsMenu_rowLabel}>
-              Change ambient sounds
+              {t('settings.changeAmbientSound')}
             </div>
             <div className={styles.SettingsMenu_buttons}>
               {atmospheres.map((atmosphere) => (

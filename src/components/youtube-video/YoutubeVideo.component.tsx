@@ -1,5 +1,6 @@
 import classNames from 'classnames';
 import React, { useContext, useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import YouTube from 'react-youtube';
 import useSound from 'use-sound';
 
@@ -16,8 +17,13 @@ import * as styles from './YoutubeVideo.module.scss';
 
 const YoutubeVideo: React.FC = () => {
   const isBrowser = typeof window !== 'undefined';
-  const { currentMix, nextMix, addOrRemoveCurrentMixToFavs, mixes } =
-    useAppContextManager();
+  const {
+    currentMix,
+    nextMix,
+    addOrRemoveCurrentMixToFavs,
+    mixes,
+    currentMood,
+  } = useAppContextManager();
   const { setAtmospherePaused, setIsLoading } = useContext(AppContext);
   const [playStaticSound, { stop: stopStaticSound }] = useSound(staticSound, {
     volume: 0.1,
@@ -49,6 +55,7 @@ const YoutubeVideo: React.FC = () => {
   const [manualInterval, setManualInterval] = useState(0);
   const checkTrackNameInterval = useRef<number | null>(null);
   const eWindow: IWindow = window as unknown as IWindow;
+  const { t } = useTranslation();
 
   /**
    * Set Youtube Player, get video title, and autoplay video
@@ -256,7 +263,7 @@ const YoutubeVideo: React.FC = () => {
                 currentMix && mixes.find((mix) => mix.id === currentMix.id)?.fav
               }
               icon={Icons.Favorite}
-              size="small"
+              size="smaller"
             />
           </div>
 
@@ -272,7 +279,7 @@ const YoutubeVideo: React.FC = () => {
                 )}
               >
                 <div className={styles.YoutubeVideo_trackPosition}>
-                  Track {track?.position}/{totalTracks}
+                  {t('player.track')} {track?.position}/{totalTracks}
                 </div>
                 <div className={styles.YoutubeVideo_trackTitle}>
                   {track?.title}
@@ -335,7 +342,9 @@ const YoutubeVideo: React.FC = () => {
                 <Button
                   onClick={nextMix}
                   icon={Icons.Shuffle}
-                  label={<div>change mix</div>}
+                  label={
+                    <div>{t('player.changeMix', { mood: currentMood })}</div>
+                  }
                   noBackground
                 />
               </div>

@@ -1,5 +1,6 @@
 import KofiButton from 'kofi-button';
 import React, { useContext, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import AppContext from '../../context/app-context/AppContext';
 import { initTvShader } from '../../utils/badTvShader';
@@ -7,6 +8,7 @@ import * as styles from './Page.module.scss';
 
 const PageLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isLoading } = useContext(AppContext);
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (isLoading) {
@@ -20,7 +22,7 @@ const PageLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         {!isLoading && (
           <KofiButton
             kofiID="flowstatemusic"
-            title="Buy me a coffee"
+            title={t('kofi')}
             color="#611C35FF"
           />
         )}

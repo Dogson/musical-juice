@@ -7,7 +7,7 @@
   justify-content: center;
   border-radius: 15px;
   min-width: 110px;
-  height: 80px;
+  height: 65px;
   background: var(--color-secondary);
   color: var(--color-secondary);
   @include text-stroke(var(--color-main));
@@ -34,6 +34,7 @@
       font-size: var(--size-big);
       text-shadow: none;
       color: var(--color-main);
+      padding-bottom: 1px;
 
       &::after {
         position: absolute;
@@ -77,6 +78,11 @@
   &__small {
     min-width: 75px;
     height: 50px;
+  }
+
+  &__smaller {
+    min-width: 60px;
+    height: 40px;
   }
 
   &__disabled {

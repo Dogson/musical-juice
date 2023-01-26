@@ -90,6 +90,7 @@ const Button: React.FC<{
       type="button"
       className={classNames(styles.Button, {
         [styles.Button__small]: size === 'small',
+        [styles.Button__smaller]: size === 'smaller',
         [styles.Button__active]: active || hasClicked,
         [styles.Button__disabled]: disabled,
         [styles.Button__noBackground]: noBackground,

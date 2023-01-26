@@ -27,19 +27,22 @@
       width: 52px;
       transition: all 0.1s ease-in;
 
-      > a > span > img {
-        animation-duration: 0s !important;
-        width: 20px;
-        margin-right: 9px !important;
-        margin-left: 9px !important;
-        box-sizing: border-box;
+      > a > span {
+        width: 170px;
+        > img {
+          animation-duration: 0s !important;
+          width: 20px;
+          margin-right: 9px !important;
+          margin-left: 9px !important;
+          box-sizing: border-box;
+        }
       }
     }
 
     &:hover {
       > div > div {
         min-width: 0;
-        width: 170px;
+        width: 185px;
 
         > a > span > img {
           animation-duration: 3s !important;

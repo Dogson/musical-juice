@@ -1,5 +1,6 @@
 import classNames from 'classnames';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import useAppContextManager from '../../hooks/useAppContextManager';
 import Button, { Icons } from '../buttons/Button.component';
@@ -19,6 +20,7 @@ const Homepage: React.FC = () => {
     mixes,
   } = useAppContextManager();
   const [launchPlayer, setLaunchPlayer] = useState(false);
+  const { t } = useTranslation();
 
   const handleStart = () => {
     setLaunchPlayer(true);
@@ -31,10 +33,12 @@ const Homepage: React.FC = () => {
       <div className={styles.Homepage_logoContainer}>
         <Logo scale={0.8} />
       </div>
-      <div className={styles.Homepage_description}>Video game music mixes</div>
+      <div className={styles.Homepage_description}>
+        {t('homepage.description')}
+      </div>
       <div className={styles.Homepage_options}>
         <div className={styles.Homepage_optionBlock}>
-          <div>Choose musical channel</div>
+          <div>{t('homepage.chooseChannel')}</div>
           <div className={styles.Homepage_optionsBlockButtons}>
             {moods.map((mood) => (
               <Button
@@ -42,8 +46,8 @@ const Homepage: React.FC = () => {
                 label={
                   mood === 'favs' ? (
                     <div className={styles.Homepage_moodFavBtn}>
-                      <small>Your</small>
-                      <div>Favs</div>
+                      <small>{t('your')}</small>
+                      <div>{t('favs')}</div>
                     </div>
                   ) : (
                     mood
@@ -57,7 +61,7 @@ const Homepage: React.FC = () => {
           </div>
         </div>
         <div className={styles.Homepage_optionBlock}>
-          <div>Choose ambient sound</div>
+          <div>{t(t('homepage.chooseAmbientSound'))}</div>
           <div className={styles.Homepage_optionsBlockButtons}>
             {atmospheres.map((atmosphere) => (
               <Button
@@ -83,7 +87,7 @@ const Homepage: React.FC = () => {
             disabled={!currentMix}
             icon={Icons.Play}
             noBackground
-            label={<div>start</div>}
+            label={<div>{t('homepage.start')}</div>}
           />
         </div>
       </div>
