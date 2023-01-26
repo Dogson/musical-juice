@@ -60,8 +60,14 @@ const useAppContextManager = (): IUseAppContextManager => {
    * Can force an elem to get last
    */
   const randomizePlaylist = useCallback(
-    (putInLast?: IMix) => {
-      const moodMixes = mixes.filter((mix) => mix.mood === currentMood);
+    (putInLast?: IMix, forceMood?: string) => {
+      const mood = forceMood || currentMood;
+      let moodMixes: IMix[];
+      if (mood === 'favs') {
+        moodMixes = mixes.filter((mix) => mix.fav);
+      } else {
+        moodMixes = mixes.filter((mix) => mix.mood === mood);
+      }
       let elemIndex;
 
       let randomPlaylist = shuffleMix(
@@ -79,16 +85,16 @@ const useAppContextManager = (): IUseAppContextManager => {
     [currentMood, mixes, setMixIdx, setMixPlaylist],
   );
 
-  const getMixes = useCallback(
-    (mixData: IMix[], mood: string) =>
-      mixData.map((mix: IMix) => ({
-        ...mix,
-        mood,
-        tracks: parseYoutubeDescription(mix.description, false),
-        url: `https://youtube.com/v/${mix.id}`,
-      })),
-    [],
-  );
+  const getMixes = useCallback((mixData: IMix[], mood: string) => {
+    const favsIds = JSON.parse(localStorage.getItem('favIds') || '[]');
+    return mixData.map((mix: IMix) => ({
+      ...mix,
+      mood,
+      tracks: parseYoutubeDescription(mix.description, false),
+      url: `https://youtube.com/v/${mix.id}`,
+      fav: favsIds.includes(mix.id),
+    }));
+  }, []);
 
   const setDownMixesCheckFunction = useCallback(() => {
     function checkThumbnail(width: number, mix: IMix) {
@@ -146,11 +152,12 @@ const useAppContextManager = (): IUseAppContextManager => {
   }, [eWindow, mixes]);
 
   /**
-   * Load app data (mixes, atmospheres and moods) with gatsby GraphQL queries
+   * Load app data (mixes, favs, atmospheres and moods) with gatsby GraphQL queries
    */
   const loadData = useCallback(() => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
+
     setMixes([
       ...getMixes(chillMixesData as unknown as IMix[], 'chill'),
       ...getMixes(groovyMixesData as unknown as IMix[], 'groovy'),
@@ -191,19 +198,44 @@ const useAppContextManager = (): IUseAppContextManager => {
   const changeMood = useCallback(
     (mood: string) => {
       setCurrentMood(mood);
+      if (mood !== currentMood) {
+        randomizePlaylist(undefined, mood);
+      }
     },
-    [setCurrentMood],
+    [currentMood, randomizePlaylist, setCurrentMood],
   );
 
   /**
    * Change current atmosphere
    */
   const changeAtmosphere = useCallback(
-    (atmosphere: string) => {
+    (atmosphere?: string) => {
       setCurrentAtmosphere(atmosphere);
     },
     [setCurrentAtmosphere],
   );
+
+  /**
+   * Add or remove current mix to/from favs
+   */
+  const addOrRemoveCurrentMixToFavs = useCallback(() => {
+    if (!currentMix) return;
+    let favsIds = JSON.parse(localStorage.getItem('favIds') || '[]');
+    if (favsIds.includes(currentMix.id)) {
+      // remove fav
+      favsIds = favsIds.filter((id: string) => currentMix.id !== id);
+    } else {
+      // add fav
+      favsIds.push(currentMix.id);
+    }
+    const newMixes = mixes.map((mix) => {
+      const fav = favsIds.includes(mix.id);
+      return { ...mix, fav };
+    });
+    setMixes(newMixes);
+
+    localStorage.setItem('favIds', JSON.stringify(favsIds));
+  }, [currentMix, mixes, setMixes]);
 
   /**
    * Update mix when mixIdx changes
@@ -213,21 +245,6 @@ const useAppContextManager = (): IUseAppContextManager => {
       setCurrentMix(mixPlaylist[mixIdx]);
     }
   }, [mixIdx, mixPlaylist, setCurrentMix]);
-
-  /**
-   * Update mixPlaylist and mixIdx when mood changes
-   */
-  useEffect(() => {
-    if (
-      !currentMood ||
-      (mixPlaylist &&
-        mixPlaylist.length > 0 &&
-        mixPlaylist[0].mood === currentMood)
-    ) {
-      return;
-    }
-    randomizePlaylist();
-  }, [currentMood, mixPlaylist, randomizePlaylist]);
 
   /**
    * Setting global youtube URL up function
@@ -247,6 +264,7 @@ const useAppContextManager = (): IUseAppContextManager => {
     changeAtmosphere,
     loadData,
     nextMix,
+    addOrRemoveCurrentMixToFavs,
   };
 };
 

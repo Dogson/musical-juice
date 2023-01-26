@@ -34,4 +34,12 @@
       margin: 10px;
     }
   }
+
+  &_moodFavBtn {
+    margin-left: 5px;
+    margin-bottom: 5px;
+    small {
+      font-size: var(--size-smallest);
+    }
+  }
 }

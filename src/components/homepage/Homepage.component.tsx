@@ -1,7 +1,7 @@
 import classNames from 'classnames';
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 
-import AppContext from '../../context/app-context/AppContext';
+import useAppContextManager from '../../hooks/useAppContextManager';
 import Button, { Icons } from '../buttons/Button.component';
 import Logo from '../logo/Logo.component';
 import PlayerPage from '../playerPage/PlayerPage.component';
@@ -10,13 +10,14 @@ import * as styles from './Homepage.module.scss';
 const Homepage: React.FC = () => {
   const {
     moods,
-    setCurrentMood,
+    changeMood,
     currentMood,
     atmospheres,
-    setCurrentAtmosphere,
+    changeAtmosphere,
     currentAtmosphere,
     currentMix,
-  } = useContext(AppContext);
+    mixes,
+  } = useAppContextManager();
   const [launchPlayer, setLaunchPlayer] = useState(false);
 
   const handleStart = () => {
@@ -36,9 +37,20 @@ const Homepage: React.FC = () => {
           <div className={styles.Homepage_optionsBlockButtons}>
             {moods.map((mood) => (
               <Button
-                onClick={() => setCurrentMood(mood)}
-                label={mood}
+                onClick={() => changeMood(mood)}
+                label={
+                  mood === 'favs' ? (
+                    <div className={styles.Homepage_moodFavBtn}>
+                      <small>Your</small>
+                      <div>Favs</div>
+                    </div>
+                  ) : (
+                    mood
+                  )
+                }
                 active={mood === currentMood}
+                disabled={mood === 'favs' && !mixes.find((mix) => mix.fav)}
+                icon={mood === 'favs' ? Icons.Favorite : undefined}
               />
             ))}
           </div>
@@ -49,7 +61,7 @@ const Homepage: React.FC = () => {
             {atmospheres.map((atmosphere) => (
               <Button
                 onClick={() =>
-                  setCurrentAtmosphere(
+                  changeAtmosphere(
                     atmosphere === currentAtmosphere ? undefined : atmosphere,
                   )
                 }

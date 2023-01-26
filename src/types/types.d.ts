@@ -12,3 +12,6 @@ declare module '*.svg' {
   const src: string;
   export default src;
 }
+
+// declaration.d.ts
+declare module '*.scss';

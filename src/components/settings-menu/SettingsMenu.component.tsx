@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import useAppContextManager from '../../hooks/useAppContextManager';
 import useOutsideClickHandler from '../../hooks/useOutsideClickHandler';
@@ -7,7 +7,10 @@ import Button, { Icons } from '../buttons/Button.component';
 import SettingsIcon from '../icons/SettingsIcon.component';
 import * as styles from './SettingsMenu.module.scss';
 
-const SettingsMenu: React.FC = () => {
+const SettingsMenu: React.FC<{
+  onOpen: () => void;
+  onClose: () => void;
+}> = ({ onOpen, onClose }) => {
   const [opened, setOpened] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const {
@@ -17,18 +20,14 @@ const SettingsMenu: React.FC = () => {
     moods,
     currentMood,
     changeMood,
+    mixes,
   } = useAppContextManager();
 
   useOutsideClickHandler(containerRef, () => {
     setOpened(false);
   });
 
-  const handleChangeMood = useCallback(
-    (mood: string) => {
-      changeMood(mood);
-    },
-    [changeMood],
-  );
+  useEffect(() => (opened ? onOpen() : onClose()), [onClose, onOpen, opened]);
 
   return (
     <div
@@ -51,9 +50,20 @@ const SettingsMenu: React.FC = () => {
             <div className={styles.SettingsMenu_buttons}>
               {moods.map((mood) => (
                 <Button
-                  onClick={() => handleChangeMood(mood)}
-                  label={mood}
-                  active={currentMood === mood}
+                  onClick={() => changeMood(mood)}
+                  label={
+                    mood === 'favs' ? (
+                      <div className={styles.SettingsMenu_moodFavBtn}>
+                        <small>Your</small>
+                        <div>Favs</div>
+                      </div>
+                    ) : (
+                      mood
+                    )
+                  }
+                  active={mood === currentMood}
+                  disabled={mood === 'favs' && !mixes.find((mix) => mix.fav)}
+                  icon={mood === 'favs' ? Icons.Favorite : undefined}
                 />
               ))}
             </div>
