@@ -29,8 +29,9 @@ const Homepage: React.FC = () => {
   ) : (
     <div role="button" className={styles.Homepage}>
       <div className={styles.Homepage_logoContainer}>
-        <Logo />
+        <Logo scale={0.8} />
       </div>
+      <div className={styles.Homepage_description}>Video game music mixes</div>
       <div className={styles.Homepage_options}>
         <div className={styles.Homepage_optionBlock}>
           <div>Choose musical channel</div>
