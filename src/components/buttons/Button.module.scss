@@ -3,6 +3,7 @@
 .Button {
   display: flex;
   align-items: center;
+  border: none;
   justify-content: center;
   border-radius: 15px;
   min-width: 110px;
@@ -85,7 +86,8 @@
     &:hover {
       background: var(--color-secondary) !important;
       color: var(--color-secondary) !important;
-      @include text-stroke(var(--color-main));
+      text-shadow: -1px -1px 0 var(--color-main), 1px -1px 0 var(--color-main),
+        -1px 1px 0 var(--color-main), 1px 1px 0 var(--color-main) !important;
 
       svg {
         fill: none !important;

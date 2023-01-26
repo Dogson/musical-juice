@@ -21,7 +21,7 @@
 
   &__opened {
     width: 430px;
-    height: 350px;
+    height: 450px;
     max-width: 90vw;
     cursor: default;
     transition: all 0.2s;
@@ -50,6 +50,19 @@
   &_buttons {
     display: flex;
     justify-content: space-between;
+    flex-wrap: wrap;
+
+    button {
+      margin: 5px 0;
+    }
+  }
+
+  &_moodFavBtn {
+    margin-left: 5px;
+    margin-bottom: 5px;
+    small {
+      font-size: var(--size-smallest);
+    }
   }
 }
 

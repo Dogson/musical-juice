@@ -10,14 +10,14 @@ import { ITrack } from '../../typings/Tracks.types';
 import { IWindow } from '../../typings/Window.types';
 import { initTvShader } from '../../utils/badTvShader';
 import Button, { Icons } from '../buttons/Button.component';
-import SettingsMenu from '../settings-menu/SettingsMenu.component';
 import fastForwardSound from './assets/fast-forward.wav';
 import staticSound from './assets/static.wav';
 import * as styles from './YoutubeVideo.module.scss';
 
 const YoutubeVideo: React.FC = () => {
   const isBrowser = typeof window !== 'undefined';
-  const { currentMix, nextMix } = useAppContextManager();
+  const { currentMix, nextMix, addOrRemoveCurrentMixToFavs, mixes } =
+    useAppContextManager();
   const { setAtmospherePaused, setIsLoading } = useContext(AppContext);
   const [playStaticSound, { stop: stopStaticSound }] = useSound(staticSound, {
     volume: 0.1,
@@ -185,11 +185,11 @@ const YoutubeVideo: React.FC = () => {
     } else {
       stopStaticSound();
       setAtmospherePaused(false);
-      initTvShader(styles.YoutubeVideo_videoContainer, currentMix?.gifs[0]);
+      initTvShader(styles.YoutubeVideo_videoContainer, currentMix?.gif);
       setIsLoading(false);
     }
   }, [
-    currentMix?.gifs,
+    currentMix?.gif,
     playStaticSound,
     setAtmospherePaused,
     setIsLoading,
@@ -250,6 +250,14 @@ const YoutubeVideo: React.FC = () => {
                 {currentMix?.title}
               </h1>
             </div>
+            <Button
+              onClick={addOrRemoveCurrentMixToFavs}
+              active={
+                currentMix && mixes.find((mix) => mix.id === currentMix.id)?.fav
+              }
+              icon={Icons.Favorite}
+              size="small"
+            />
           </div>
 
           <div className={styles.YoutubeVideo_bottomInfos}>
@@ -301,20 +309,23 @@ const YoutubeVideo: React.FC = () => {
                 size="small"
                 icon={Icons.Backward}
                 active={skippingTrack === 'previous'}
-                disabled={!track || track.position === 1}
+                disabled={!track || track.position === 1 || !!skippingTrack}
               />
               <Button
                 onClick={handlePauseClick}
                 size="small"
                 icon={videoPaused ? Icons.Play : Icons.Pause}
                 active={videoPaused}
+                disabled={!!skippingTrack}
               />
               <Button
                 onClick={handleNextTrack}
                 size="small"
                 icon={Icons.Forward}
                 active={skippingTrack === 'next'}
-                disabled={!track || track.position === totalTracks}
+                disabled={
+                  !track || track.position === totalTracks || !!skippingTrack
+                }
               />
             </div>
             <div className={styles.YoutubeVideo_nextMixBtn}>
@@ -329,9 +340,6 @@ const YoutubeVideo: React.FC = () => {
                 />
               </div>
             </div>
-          </div>
-          <div className={styles.YoutubeVideo_settings}>
-            <SettingsMenu />
           </div>
         </div>
       )}

@@ -11,4 +11,5 @@ export interface IUseAppContextManager {
   changeMood: (mood: string) => void;
   nextMix: () => void;
   changeAtmosphere: (atmosphere?: string) => void;
+  addOrRemoveCurrentMixToFavs: () => void;
 }

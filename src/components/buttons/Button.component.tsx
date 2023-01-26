@@ -4,6 +4,7 @@ import useSound from 'use-sound';
 
 import buttonPressSound from '../../assets/button-press.mp3';
 import BackwardIcon from '../icons/BackwardIcon.component';
+import FavoriteIcon from '../icons/FavoriteIcon.component';
 import FireplaceIcon from '../icons/FireplaceIcon.component';
 import ForwardIcon from '../icons/ForwardIcon.component';
 import NatureIcon from '../icons/NatureIcon.component';
@@ -19,6 +20,7 @@ export const enum Icons {
   Shuffle,
   Forward,
   Backward,
+  Favorite,
   Rain = 'rain',
   Fireplace = 'fireplace',
   Nature = 'nature',
@@ -67,6 +69,8 @@ const Button: React.FC<{
         return <ForwardIcon />;
       case Icons.Backward:
         return <BackwardIcon />;
+      case Icons.Favorite:
+        return <FavoriteIcon />;
       case Icons.Rain:
         return <RainIcon />;
       case Icons.Nature:
@@ -92,7 +96,7 @@ const Button: React.FC<{
       })}
     >
       {iconComponent && iconComponent}
-      {label}
+      <div className={styles.Button_label}>{label}</div>
     </button>
   );
 };

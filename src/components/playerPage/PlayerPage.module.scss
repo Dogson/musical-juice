@@ -29,6 +29,21 @@
       animation: slow-blink 2s infinite;
     }
   }
+
+  &_settings {
+    z-index: 4;
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  &_ytContainerBlur {
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    filter: blur(3px);
+  }
 }
 
 @media (max-width: 800px) {
