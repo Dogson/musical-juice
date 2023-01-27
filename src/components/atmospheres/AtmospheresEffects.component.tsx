@@ -1,142 +1,74 @@
 import classNames from 'classnames';
-import React, { useCallback, useContext, useEffect, useMemo } from 'react';
-import useSound from 'use-sound';
+import React, { useContext, useEffect, useMemo } from 'react';
+import { useAudioPlayer } from 'react-use-audio-player';
 
 import AppContext from '../../context/app-context/AppContext';
 import useAppContextManager from '../../hooks/useAppContextManager';
 import fireplaceSound from './assets/fireplace.mp3';
-import fireworkSound from './assets/fireworks.mp3';
 import natureSound from './assets/nature.mp3';
-import rainSound from './assets/rain.wav';
-import streetSound from './assets/street.mp3';
+import rainSound from './assets/rain.mp3';
 import * as styles from './Atmospheres.module.scss';
 import FireEffect from './Fire.component';
-import FireworksEffect from './Fireworks.component';
 import NatureEffect from './Nature.component';
 import RainEffect from './Rain.component';
 
 const Atmospheres: React.FC = () => {
   const { currentAtmosphere } = useAppContextManager();
-  const { atmospherePaused } = useContext(AppContext);
+  const { atmospherePaused, soundVolume } = useContext(AppContext);
 
-  const [playFireplace, { stop: stopFireplace, pause: pauseFireplace }] =
-    useSound(fireplaceSound, {
-      loop: true,
-      volume: 1.3,
-      interrupt: true,
-    });
-  const [playFirework, { stop: stopFirework, pause: pauseFirework }] = useSound(
-    fireworkSound,
-    {
-      loop: true,
-      volume: 0.7,
-      interrupt: true,
-    },
-  );
-  const [playNature, { stop: stopNature, pause: pauseNature }] = useSound(
-    natureSound,
-    {
-      loop: true,
-      volume: 1,
-      interrupt: true,
-    },
-  );
-  const [playRain, { stop: stopRain, pause: pauseRain }] = useSound(rainSound, {
+  const soundFile = useMemo(() => {
+    switch (currentAtmosphere) {
+      case 'rain':
+        return rainSound;
+      case 'fireplace':
+        return fireplaceSound;
+      case 'nature':
+        return natureSound;
+      default:
+        return '';
+    }
+  }, [currentAtmosphere]);
+
+  const { play, pause, volume, stop } = useAudioPlayer({
+    src: soundFile,
+    format: 'mp3',
+    autoplay: true,
     loop: true,
-    interrupt: true,
-    volume: 3,
+    volume: 1,
   });
-  const [playStreet, { stop: stopStreet, pause: pauseStreet }] = useSound(
-    streetSound,
-    {
-      loop: true,
-      interrupt: true,
-      volume: 0.6,
-    },
-  );
 
-  const atmosphereDetails = useMemo(() => {
+  const atmosphereComponent = useMemo(() => {
     switch (currentAtmosphere) {
       case 'fireplace':
-        return {
-          play: playFireplace,
-          pause: pauseFireplace,
-          stop: stopFireplace,
-          component: <FireEffect />,
-        };
-      case 'fireworks':
-        return {
-          play: playFirework,
-          pause: pauseFirework,
-          stop: stopFirework,
-          component: <FireworksEffect />,
-        };
+        return <FireEffect />;
       case 'nature':
-        return {
-          play: playNature,
-          pause: pauseNature,
-          stop: stopNature,
-          component: <NatureEffect />,
-        };
+        return <NatureEffect />;
       case 'rain':
-        return {
-          play: playRain,
-          pause: pauseRain,
-          stop: stopRain,
-          component: <RainEffect />,
-        };
-      case 'street':
-        return {
-          play: playStreet,
-          pause: pauseStreet,
-          stop: stopStreet,
-          component: <FireworksEffect />,
-        };
+        return <RainEffect />;
       default:
         return undefined;
     }
-  }, [
-    currentAtmosphere,
-    pauseFireplace,
-    pauseFirework,
-    pauseNature,
-    pauseRain,
-    pauseStreet,
-    playFireplace,
-    playFirework,
-    playNature,
-    playRain,
-    playStreet,
-    stopFireplace,
-    stopFirework,
-    stopNature,
-    stopRain,
-    stopStreet,
-  ]);
-
-  const stopAllSounds = useCallback(() => {
-    stopFireplace();
-    stopFirework();
-    stopNature();
-    stopRain();
-    stopStreet();
-  }, [stopFireplace, stopFirework, stopNature, stopRain, stopStreet]);
+  }, [currentAtmosphere]);
 
   useEffect(() => {
-    stopAllSounds();
-    if (atmosphereDetails) {
-      atmosphereDetails.play();
+    volume(soundVolume);
+  }, [currentAtmosphere, soundVolume, volume]);
+
+  useEffect(() => {
+    stop();
+    if (atmosphereComponent) {
+      play();
     }
-  }, [atmosphereDetails, stopAllSounds]);
+  }, [atmosphereComponent, play, stop]);
 
   useEffect(() => {
-    if (!atmosphereDetails) return;
+    if (!atmosphereComponent) return;
     if (atmospherePaused) {
-      atmosphereDetails.pause();
+      pause();
     } else {
-      atmosphereDetails.play();
+      play();
     }
-  }, [atmospherePaused, atmosphereDetails]);
+  }, [atmospherePaused, atmosphereComponent, pause, play]);
 
   return (
     <div className={styles.Atmospheres}>
@@ -145,7 +77,7 @@ const Atmospheres: React.FC = () => {
           [styles.Atmospheres_animation__hidden]: atmospherePaused,
         })}
       >
-        {atmosphereDetails && atmosphereDetails.component}
+        {atmosphereComponent}
       </div>
     </div>
   );

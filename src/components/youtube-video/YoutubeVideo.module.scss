@@ -4,8 +4,13 @@
   width: 100%;
   height: 100%;
 
+  video {
+    z-index: -2;
+    display: none;
+  }
+
   &:before {
-    box-shadow: inset 0 100px 2000px black, inset 0 -100px 2000px black;
+    box-shadow: inset 0 110px 2000px black, inset 0 -110px 2000px black;
     content: '';
     position: absolute;
     width: 100%;
@@ -38,6 +43,12 @@
     align-items: center;
     justify-content: space-between;
     background: transparent;
+    position: absolute;
+    width: min(16 * 100vh / 9, 90vw);
+    left: 0;
+    right: 0;
+    margin-left: auto;
+    margin-right: auto;
   }
 
   &_videoWrapper {
@@ -48,12 +59,14 @@
   &_trackInfos {
     font-weight: 300;
     @include flex-column-full-center();
+    align-items: flex-start;
     letter-spacing: 3px;
+    margin: 10px 0;
   }
 
   &_trackTitle {
     font-size: var(--size-big);
-    text-align: center;
+    max-width: 600px;
   }
 
   &_trackPosition {
@@ -94,16 +107,22 @@
   }
 
   &_bottomInfos {
-    @include flex-column-full-center();
-    margin-bottom: 50px;
+    margin-left: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    align-self: flex-start;
+    margin-bottom: 30px;
     max-width: 90vw;
   }
 
   &_playerButtons {
     @include flex-row();
-    width: 270px;
+    width: 220px;
     align-items: center;
     justify-content: space-between;
+    margin-left: -2px;
+    margin-bottom: 15px;
   }
 
   &_btn {
@@ -136,10 +155,7 @@
   }
 
   &_nextMixBtn {
-    position: absolute;
-    transform: scale(0.8);
-    right: 20px;
-    bottom: 31px;
+    font-size: var(--size-small);
   }
 }
 

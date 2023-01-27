@@ -70,6 +70,8 @@ const useAppContextManager = (): IUseAppContextManager => {
       }
       let elemIndex;
 
+      // let randomPlaylist = moodMixes.reverse();
+
       let randomPlaylist = shuffleMix(
         putInLast ? moodMixes.filter((m) => m.id !== putInLast.id) : moodMixes,
       );
@@ -122,11 +124,18 @@ const useAppContextManager = (): IUseAppContextManager => {
         console.warn(`ID : ${mix.id}`);
         console.warn(`URL : https://www.youtube.com/watch?v=${mix.id}`);
       };
+
+      const iframe = document.createElement('iframe');
+      iframe.src = `https://www.youtube.com/embed/${mix.id}?enablejsapi=1`;
+      iframe.id = mix.id;
+      document.body.appendChild(iframe);
+      document.body.style.overflow = 'visible';
     }
 
     if (eWindow)
       eWindow.checkWhichMixesAreDown = () => {
         console.log('CHECKING IF SOME MIXES ARE DOWN');
+        console.log(`'TOTAL MIXES : ${mixes.length}`);
         if (!mixes) {
           console.warn('Wait for app to initialize and try again.');
         } else {

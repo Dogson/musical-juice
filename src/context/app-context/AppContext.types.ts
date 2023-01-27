@@ -25,4 +25,8 @@ export interface IAppContext {
   >;
   isLoading?: boolean;
   setIsLoading: (val: boolean) => void;
+  musicVolume: number;
+  setMusicVolume: (vol: number) => void;
+  soundVolume: number;
+  setSoundVolume: (vol: number) => void;
 }

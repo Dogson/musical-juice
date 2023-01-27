@@ -4,8 +4,8 @@
   position: relative;
   @include flex-column-full-center();
   box-shadow: 0 11px 10px rgba(0, 0, 0, 0.5);
-  width: 70px;
-  height: 90px;
+  width: 50px;
+  height: 60px;
   transition: height 0.1s, width 0.1s, border 0.2s;
   background: rgba(97, 28, 53, 0.75);
   border-radius: 20px 0 0 20px;
@@ -21,7 +21,7 @@
 
   &__opened {
     width: 430px;
-    height: 450px;
+    height: 550px;
     max-width: 90vw;
     cursor: default;
     transition: all 0.2s;
@@ -39,11 +39,22 @@
     justify-content: space-between;
   }
 
+  &_block {
+  }
+
+  &_blockLabel {
+    font-size: var(--size-bigger);
+    text-align: center;
+    margin-bottom: 10px;
+  }
+
   &_row {
+    margin-bottom: 10px;
   }
 
   &_rowLabel {
-    font-size: var(size-big);
+    text-align: center;
+    font-size: var(--size-small);
     font-weight: 300;
   }
 

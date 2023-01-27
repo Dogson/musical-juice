@@ -1,5 +1,6 @@
 import classNames from 'classnames';
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import YouTube from 'react-youtube';
 import useSound from 'use-sound';
 
@@ -16,8 +17,14 @@ import * as styles from './YoutubeVideo.module.scss';
 
 const YoutubeVideo: React.FC = () => {
   const isBrowser = typeof window !== 'undefined';
-  const { currentMix, nextMix, addOrRemoveCurrentMixToFavs, mixes } =
-    useAppContextManager();
+  const {
+    currentMix,
+    nextMix,
+    addOrRemoveCurrentMixToFavs,
+    mixes,
+    currentMood,
+  } = useAppContextManager();
+  const { musicVolume } = useContext(AppContext);
   const { setAtmospherePaused, setIsLoading } = useContext(AppContext);
   const [playStaticSound, { stop: stopStaticSound }] = useSound(staticSound, {
     volume: 0.1,
@@ -47,8 +54,10 @@ const YoutubeVideo: React.FC = () => {
   const timeoutRef = useRef<number>();
   const [videoPaused, setVideoPaused] = useState<boolean>();
   const [manualInterval, setManualInterval] = useState(0);
+  const [backgroundVideoLoaded, setBackgroundVideoLoaded] = useState(false);
   const checkTrackNameInterval = useRef<number | null>(null);
   const eWindow: IWindow = window as unknown as IWindow;
+  const { t } = useTranslation();
 
   /**
    * Set Youtube Player, get video title, and autoplay video
@@ -58,6 +67,11 @@ const YoutubeVideo: React.FC = () => {
     e.target.seekTo(track?.start || 0, true);
     e.target.playVideo();
   };
+
+  const allLoaded = useMemo(
+    () => videoLoaded && backgroundVideoLoaded,
+    [backgroundVideoLoaded, videoLoaded],
+  );
 
   /**
    * timeout if mix is not charged
@@ -80,6 +94,12 @@ const YoutubeVideo: React.FC = () => {
     },
     [],
   );
+
+  useEffect(() => {
+    if (player) {
+      player.setVolume(musicVolume * 100);
+    }
+  }, [musicVolume, player]);
 
   useEffect(() => {
     if (videoLoaded) {
@@ -178,23 +198,23 @@ const YoutubeVideo: React.FC = () => {
   }, [player, manualInterval]);
 
   useEffect(() => {
-    if (!videoLoaded) {
+    if (!allLoaded) {
       setAtmospherePaused(true);
       playStaticSound();
       setIsLoading(true);
     } else {
+      initTvShader(styles.YoutubeVideo_videoContainer, currentMix?.gif);
       stopStaticSound();
       setAtmospherePaused(false);
-      initTvShader(styles.YoutubeVideo_videoContainer, currentMix?.gif);
       setIsLoading(false);
     }
   }, [
+    allLoaded,
     currentMix?.gif,
     playStaticSound,
     setAtmospherePaused,
     setIsLoading,
     stopStaticSound,
-    videoLoaded,
   ]);
 
   useEffect(() => {
@@ -223,7 +243,7 @@ const YoutubeVideo: React.FC = () => {
     () => () => {
       stopStaticSound();
     },
-    [currentMix, stopStaticSound, videoLoaded],
+    [currentMix, stopStaticSound, allLoaded],
   );
   /**
    * Preloading video + showing static when changing mix
@@ -231,11 +251,21 @@ const YoutubeVideo: React.FC = () => {
   useEffect(() => {
     setAtmospherePaused(undefined);
     setVideoLoaded(false);
+    setBackgroundVideoLoaded(false);
   }, [currentMix, setAtmospherePaused]);
 
   return (
     <div className={styles.YoutubeVideo}>
-      {videoLoaded && (
+      {currentMix && (
+        <video
+          id="background-video"
+          src={currentMix?.gif}
+          onLoadedData={() => {
+            setBackgroundVideoLoaded(true);
+          }}
+        />
+      )}
+      {allLoaded && (
         <div className={styles.YoutubeVideo_interactiveLayer} role="button">
           <div className={styles.YoutubeVideo_topInfos}>
             <h3 className="animate__animated animate__fadeInDown">
@@ -250,14 +280,17 @@ const YoutubeVideo: React.FC = () => {
                 {currentMix?.title}
               </h1>
             </div>
-            <Button
-              onClick={addOrRemoveCurrentMixToFavs}
-              active={
-                currentMix && mixes.find((mix) => mix.id === currentMix.id)?.fav
-              }
-              icon={Icons.Favorite}
-              size="small"
-            />
+            <div className="animate__animated animate__fadeInUp">
+              <Button
+                onClick={addOrRemoveCurrentMixToFavs}
+                active={
+                  currentMix &&
+                  mixes.find((mix) => mix.id === currentMix.id)?.fav
+                }
+                icon={Icons.Favorite}
+                size="smaller"
+              />
+            </div>
           </div>
 
           <div className={styles.YoutubeVideo_bottomInfos}>
@@ -272,7 +305,7 @@ const YoutubeVideo: React.FC = () => {
                 )}
               >
                 <div className={styles.YoutubeVideo_trackPosition}>
-                  Track {track?.position}/{totalTracks}
+                  {t('player.track')} {track?.position}/{totalTracks}
                 </div>
                 <div className={styles.YoutubeVideo_trackTitle}>
                   {track?.title}
@@ -306,21 +339,21 @@ const YoutubeVideo: React.FC = () => {
             <div className={styles.YoutubeVideo_playerButtons}>
               <Button
                 onClick={handlePreviousTrack}
-                size="small"
+                size="smaller"
                 icon={Icons.Backward}
                 active={skippingTrack === 'previous'}
                 disabled={!track || track.position === 1 || !!skippingTrack}
               />
               <Button
                 onClick={handlePauseClick}
-                size="small"
+                size="smaller"
                 icon={videoPaused ? Icons.Play : Icons.Pause}
                 active={videoPaused}
                 disabled={!!skippingTrack}
               />
               <Button
                 onClick={handleNextTrack}
-                size="small"
+                size="smaller"
                 icon={Icons.Forward}
                 active={skippingTrack === 'next'}
                 disabled={
@@ -328,17 +361,19 @@ const YoutubeVideo: React.FC = () => {
                 }
               />
             </div>
-            <div className={styles.YoutubeVideo_nextMixBtn}>
-              <div
-                className={classNames('animate__animated', 'animate__fadeInUp')}
-              >
-                <Button
-                  onClick={nextMix}
-                  icon={Icons.Shuffle}
-                  label={<div>change mix</div>}
-                  noBackground
-                />
-              </div>
+            <div
+              className={classNames('animate__animated', 'animate__fadeInUp')}
+            >
+              <Button
+                onClick={nextMix}
+                icon={Icons.Shuffle}
+                label={
+                  <div className={styles.YoutubeVideo_nextMixBtn}>
+                    {t('player.changeMix', { mood: currentMood })}
+                  </div>
+                }
+                noBackground
+              />
             </div>
           </div>
         </div>
