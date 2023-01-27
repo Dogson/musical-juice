@@ -6,16 +6,17 @@
   border: none;
   justify-content: center;
   border-radius: 15px;
-  min-width: 110px;
-  height: 80px;
+  min-width: 100px;
+  height: 55px;
   background: var(--color-secondary);
   color: var(--color-secondary);
   @include text-stroke(var(--color-main));
   font-family: Lazer84, sans-serif;
-  font-size: var(--size-normal);
+  font-size: var(--size-small);
   box-shadow: 0 4px 4px #000;
   cursor: pointer;
   transition: all 0.2s;
+  padding: 0;
 
   svg {
     transition: all 0.2s;
@@ -34,6 +35,8 @@
       font-size: var(--size-big);
       text-shadow: none;
       color: var(--color-main);
+      padding-bottom: 1px;
+      letter-spacing: 1px;
 
       &::after {
         position: absolute;
@@ -77,6 +80,11 @@
   &__small {
     min-width: 75px;
     height: 50px;
+  }
+
+  &__smaller {
+    min-width: 60px;
+    height: 40px;
   }
 
   &__disabled {

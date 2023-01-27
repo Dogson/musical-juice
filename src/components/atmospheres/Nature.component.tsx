@@ -12,7 +12,7 @@ const NatureEffect: React.FC = () => {
   const options = {
     particles: {
       number: {
-        value: 30,
+        value: 50,
         density: {
           enable: true,
           value_area: 3000,
@@ -55,21 +55,20 @@ const NatureEffect: React.FC = () => {
       },
       opacity: {
         value: 1,
-        random: true,
         anim: {
-          enable: true,
+          enable: false,
           speed: 1,
-          opacity_min: 0.5,
+          opacity_min: 0.7,
           sync: false,
         },
       },
       size: {
-        value: 20,
+        value: 25,
         random: true,
         anim: {
           enable: false,
           speed: 4,
-          size_min: 12,
+          size_min: 18,
           sync: false,
         },
       },
@@ -82,17 +81,16 @@ const NatureEffect: React.FC = () => {
       },
       rotate: {
         random: true,
-
         animation: {
           enable: true,
-          speed: 4,
+          speed: 7,
         },
       },
       move: {
         enable: true,
         speed: 6,
         direction: 'bottom',
-        random: false,
+        random: true,
         straight: false,
         out_mode: 'out',
         bounce: false,
@@ -106,7 +104,7 @@ const NatureEffect: React.FC = () => {
   } as ISourceOptions;
 
   return (
-    <div className={styles.Atmospheres_fire}>
+    <div className={styles.Atmospheres_nature}>
       <Particles params={options} />
     </div>
   );

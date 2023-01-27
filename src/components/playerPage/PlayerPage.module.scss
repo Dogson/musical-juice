@@ -2,15 +2,15 @@
 
 @keyframes slow-blink {
   0% {
-    opacity: 1;
+    opacity: 0.8;
   }
 
   50% {
-    opacity: 0.5;
+    opacity: 0.3;
   }
 
   100% {
-    opacity: 1;
+    opacity: 0.8;
   }
 }
 
@@ -21,9 +21,10 @@
 
   &_logoContainer {
     position: absolute;
-    top: -115px;
-    left: -115px;
+    top: -135px;
+    left: -135px;
     z-index: 4;
+    opacity: 0.8;
 
     &__loading {
       animation: slow-blink 2s infinite;
