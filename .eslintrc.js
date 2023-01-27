@@ -43,6 +43,7 @@ module.exports = {
     },
   ],
   rules: {
+    'react/require-default-props': 'off',
     // * should be listed in the project's dependencies, not devDependencies
     'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
     // Visible, non-interactive elements with click handlers must have at least one keyboard listener

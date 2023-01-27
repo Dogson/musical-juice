@@ -1,0 +1,52 @@
+@import 'src/styles/global.scss';
+
+.Logo {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  cursor: default;
+  user-select: none;
+
+  &_sun {
+    width: 400px;
+    height: 400px;
+    background-image: url('./assets/sun.png');
+    background-size: contain;
+    animation: rotate 10s infinite ease-in-out;
+  }
+
+  &_flow {
+    position: absolute;
+    top: 107px;
+    transform: rotate(-38deg);
+    font-family: Streamster, sans-serif;
+    color: var(--color-secondary);
+    font-size: 140px;
+    left: 90px;
+    z-index: 1;
+    margin-left: -10px;
+  }
+
+  &_state {
+    position: absolute;
+    font-family: BasicLazer, sans-serif;
+    bottom: 43px;
+    -webkit-text-stroke: 1px var(--color-main);
+    z-index: 1;
+    font-size: 87px;
+    color: transparent;
+    text-shadow: 0 8px 18px var(--color-secondary);
+  }
+
+  &_mixMood {
+    position: absolute;
+    font-family: Lazer84, sans-serif;
+    color: var(--color-primary);
+    bottom: 5px;
+    margin-left: -10px;
+    font-size: 40px;
+    letter-spacing: 10px;
+  }
+}

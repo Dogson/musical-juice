@@ -1,0 +1,57 @@
+@import 'src/styles/global.scss';
+
+.Homepage {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  @include flex-column-full-center();
+  font-size: var(--size-bigger);
+  background: var(--color-dark);
+
+  &_logoContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: -80px;
+  }
+
+  &_description {
+    margin-top: -50px;
+    margin-bottom: 75px;
+    font-size: var(--size-big);
+    font-family: Lazer84, sans-serif;
+    text-shadow: 0 4px 4px black;
+    letter-spacing: 4px;
+    transform: rotate(-4.49deg);
+    font-weight: 200;
+  }
+
+  &_options {
+    margin-top: -10px;
+    z-index: 4;
+  }
+
+  &_optionBlock {
+    display: flex;
+    font-size: var(--size-big);
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 15px;
+  }
+
+  &_optionsBlockButtons {
+    display: flex;
+
+    button {
+      margin: 10px;
+    }
+  }
+
+  &_moodFavBtn {
+    margin-left: 5px;
+    margin-bottom: 5px;
+    small {
+      font-size: var(--size-smallest);
+    }
+  }
+}

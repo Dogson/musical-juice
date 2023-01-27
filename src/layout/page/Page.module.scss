@@ -1,0 +1,71 @@
+@keyframes animate {
+  0% {
+    left: 0;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+.PageLayout {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-width: 100vw;
+  min-height: 100vh;
+  box-shadow: inset 0 100px 2000px black, inset 0 -100px 2000px black;
+  background-size: 100%;
+  background: black;
+
+  &_kofiContainer {
+    z-index: 100;
+    position: absolute;
+    right: 0;
+    top: 40px;
+    > div > div {
+      min-width: 0;
+      width: 52px;
+      transition: all 0.1s ease-in;
+
+      > a > span {
+        width: 170px;
+        > img {
+          animation-duration: 0s !important;
+          width: 20px;
+          margin-right: 9px !important;
+          margin-left: 9px !important;
+          box-sizing: border-box;
+        }
+      }
+    }
+
+    &:hover {
+      > div > div {
+        min-width: 0;
+        width: 185px;
+
+        > a > span > img {
+          animation-duration: 3s !important;
+        }
+      }
+    }
+  }
+
+  &_content {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    min-width: 100vw;
+    min-height: 100vh;
+  }
+}
+
+@media (max-width: 600px) {
+  .PageLayout {
+    &_kofiContainer {
+      > div > div {
+        overflow: hidden;
+      }
+    }
+  }
+}

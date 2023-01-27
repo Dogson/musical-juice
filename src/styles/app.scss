@@ -1,0 +1,57 @@
+//layout
+html {
+  //font weights :
+  --weight-light: 300;
+  --weight-regular: normal;
+  --weight-bold: 500;
+
+  //text size
+  --size-smallest: 12px;
+  --size-smaller: 15px;
+  --size-small: 18px;
+  --size-normal: 20px;
+  --size-big: 26px;
+  --size-bigger: 32px;
+  --size-biggest: 40px;
+
+  //colors
+  --color-main: #42ff00;
+  --color-secondary: #611c35;
+  --color-dark: #1c1018;
+
+  font-family: 'Roboto', sans-serif;
+  font-weight: var(--weight-regular);
+  font-size: var(--size-normal);
+  background-color: var(--background-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@font-face {
+  font-family: 'Streamster';
+  src: url('./fonts/Streamster.ttf');
+}
+
+@font-face {
+  font-family: 'Lazer84';
+  src: url('./fonts/Lazer84.ttf');
+}
+
+@font-face {
+  font-family: 'BasicLazer';
+  src: url('./fonts/BasicLazer.otf');
+}
+
+body {
+  margin: 0;
+  overflow: hidden;
+  font-family: BasicLazer, sans-serif;
+  color: var(--color-main);
+  font-weight: 300;
+}
+
+canvas {
+  position: absolute;
+  max-width: 100vw;
+  max-height: 100vh;
+}

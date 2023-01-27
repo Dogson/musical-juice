@@ -1,6 +1,7 @@
 backend:
   name: github
   repo: Dogson/musical-juice
+  branch: develop
 
 media_folder: static/assets/images
 public_folder: assets/images
