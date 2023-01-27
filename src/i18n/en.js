@@ -2,6 +2,11 @@ export default {
   your: 'your',
   favs: 'favs',
   kofi: 'Buy me a coffee',
+  helmet: {
+    title: 'Flow State - Video Game Music To Focus',
+    description:
+      'Enter a state of flow and focus by listening to quality video game music mixes and ambient noises.',
+  },
   homepage: {
     description: 'Video game music mixes',
     chooseChannel: 'Choose musical genre',
@@ -16,6 +21,6 @@ export default {
   },
   player: {
     track: 'Track',
-    changeMix: 'change {{mood}} mix',
+    changeMix: 'next {{mood}} mix',
   },
 };

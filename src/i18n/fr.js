@@ -2,6 +2,11 @@ export default {
   your: 'vos',
   favs: 'favs',
   kofi: 'Offrez-moi un café',
+  helmet: {
+    title: 'Flow State - De la musique de jeux vidéo pour se concentrer.',
+    description:
+      'Entrez dans un état de flow en écoutant des mixes de musique de jeux vidéo et des ambiances sonores atmosphériques',
+  },
   homepage: {
     description: 'Mixes musicaux de jeux vidéo',
     chooseChannel: 'Choisissez le genre de musique',
@@ -16,6 +21,6 @@ export default {
   },
   player: {
     track: 'Titre',
-    changeMix: 'Changer de mix {{mood}}',
+    changeMix: 'Prochain mix {{mood}}',
   },
 };
