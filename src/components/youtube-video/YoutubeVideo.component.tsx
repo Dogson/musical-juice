@@ -323,21 +323,21 @@ const YoutubeVideo: React.FC = () => {
             <div className={styles.YoutubeVideo_playerButtons}>
               <Button
                 onClick={handlePreviousTrack}
-                size="small"
+                size="smaller"
                 icon={Icons.Backward}
                 active={skippingTrack === 'previous'}
                 disabled={!track || track.position === 1 || !!skippingTrack}
               />
               <Button
                 onClick={handlePauseClick}
-                size="small"
+                size="smaller"
                 icon={videoPaused ? Icons.Play : Icons.Pause}
                 active={videoPaused}
                 disabled={!!skippingTrack}
               />
               <Button
                 onClick={handleNextTrack}
-                size="small"
+                size="smaller"
                 icon={Icons.Forward}
                 active={skippingTrack === 'next'}
                 disabled={
@@ -345,19 +345,19 @@ const YoutubeVideo: React.FC = () => {
                 }
               />
             </div>
-            <div className={styles.YoutubeVideo_nextMixBtn}>
-              <div
-                className={classNames('animate__animated', 'animate__fadeInUp')}
-              >
-                <Button
-                  onClick={nextMix}
-                  icon={Icons.Shuffle}
-                  label={
-                    <div>{t('player.changeMix', { mood: currentMood })}</div>
-                  }
-                  noBackground
-                />
-              </div>
+            <div
+              className={classNames('animate__animated', 'animate__fadeInUp')}
+            >
+              <Button
+                onClick={nextMix}
+                icon={Icons.Shuffle}
+                label={
+                  <div className={styles.YoutubeVideo_nextMixBtn}>
+                    {t('player.changeMix', { mood: currentMood })}
+                  </div>
+                }
+                noBackground
+              />
             </div>
           </div>
         </div>

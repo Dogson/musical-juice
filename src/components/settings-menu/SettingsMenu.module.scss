@@ -4,8 +4,8 @@
   position: relative;
   @include flex-column-full-center();
   box-shadow: 0 11px 10px rgba(0, 0, 0, 0.5);
-  width: 70px;
-  height: 90px;
+  width: 50px;
+  height: 60px;
   transition: height 0.1s, width 0.1s, border 0.2s;
   background: rgba(97, 28, 53, 0.75);
   border-radius: 20px 0 0 20px;

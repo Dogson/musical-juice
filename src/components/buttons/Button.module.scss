@@ -16,6 +16,7 @@
   box-shadow: 0 4px 4px #000;
   cursor: pointer;
   transition: all 0.2s;
+  padding: 0;
 
   svg {
     transition: all 0.2s;
@@ -35,6 +36,7 @@
       text-shadow: none;
       color: var(--color-main);
       padding-bottom: 1px;
+      letter-spacing: 1px;
 
       &::after {
         position: absolute;
