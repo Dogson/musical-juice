@@ -1,6 +1,7 @@
 export default {
   your: 'your',
   favs: 'favs',
+  kofi: 'Buy me a coffee',
   homepage: {
     description: 'Video game music mixes',
     chooseChannel: 'Choose musical genre',
@@ -8,8 +9,10 @@ export default {
     start: 'Start',
   },
   settings: {
-    changeChannel: 'Change musical genre',
-    changeAmbientSound: 'Change ambient soundscape',
+    channel: 'Musical genre',
+    musicVolume: 'Music volume',
+    ambientSound: 'Ambient soundscape',
+    ambientSoundVolume: 'Soundscape volume',
   },
   player: {
     track: 'Track',

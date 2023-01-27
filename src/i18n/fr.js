@@ -9,8 +9,10 @@ export default {
     start: 'Démarrer',
   },
   settings: {
-    changeChannel: 'Changer le genre de musique',
-    changeAmbientSound: 'Changer le fond sonore',
+    channel: 'Genre musical',
+    musicVolume: 'Volume de la musique',
+    ambientSound: 'Fond sonore',
+    ambientSoundVolume: 'Volume du fond sonore',
   },
   player: {
     track: 'Titre',

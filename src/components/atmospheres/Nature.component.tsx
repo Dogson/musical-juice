@@ -55,9 +55,8 @@ const NatureEffect: React.FC = () => {
       },
       opacity: {
         value: 1,
-        random: true,
         anim: {
-          enable: true,
+          enable: false,
           speed: 1,
           opacity_min: 0.7,
           sync: false,

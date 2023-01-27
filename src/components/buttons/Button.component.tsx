@@ -12,6 +12,7 @@ import PauseIcon from '../icons/PauseIcon.component';
 import PlayIcon from '../icons/PlayIcon.component';
 import RainIcon from '../icons/RainIcon.component';
 import ShuffleIcon from '../icons/ShuffleIcon.component';
+import UnfavoriteIcon from '../icons/UnfavoriteIcon.component';
 import * as styles from './Button.module.scss';
 
 export const enum Icons {
@@ -30,7 +31,7 @@ const Button: React.FC<{
   onClick: () => void;
   label?: React.ReactNode;
   icon?: Icons;
-  size?: 'small' | 'normal';
+  size?: 'small' | 'normal' | 'smaller';
   active?: boolean;
   timeout?: number;
   disabled?: boolean;
@@ -47,6 +48,7 @@ const Button: React.FC<{
 }) => {
   const [play] = useSound(buttonPressSound);
   const [hasClicked, setHasClicked] = useState(false);
+  const [hover, setHover] = useState(false);
 
   const handleClick = () => {
     if (disabled) return;
@@ -70,6 +72,9 @@ const Button: React.FC<{
       case Icons.Backward:
         return <BackwardIcon />;
       case Icons.Favorite:
+        if (hover && active && !label) {
+          return <UnfavoriteIcon />;
+        }
         return <FavoriteIcon />;
       case Icons.Rain:
         return <RainIcon />;
@@ -80,7 +85,7 @@ const Button: React.FC<{
       default:
         return null;
     }
-  }, [icon]);
+  }, [active, hover, icon, label]);
 
   return (
     <button
@@ -95,6 +100,8 @@ const Button: React.FC<{
         [styles.Button__disabled]: disabled,
         [styles.Button__noBackground]: noBackground,
       })}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
     >
       {iconComponent && iconComponent}
       <div className={styles.Button_label}>{label}</div>

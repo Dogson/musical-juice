@@ -1,0 +1,58 @@
+@import 'src/styles/global.scss';
+
+.VolumeSlider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &_slider {
+    margin-left: 10px;
+    margin-right: 10px;
+    width: 320px;
+    height: 20px;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+  }
+
+  &_track {
+    position: relative;
+    background: #d9d9d9;
+    z-index: 10;
+    height: 8px;
+    border-radius: 20px;
+    cursor: pointer;
+
+    &:first-child {
+      background: var(--color-main);
+    }
+  }
+
+  &_thumb {
+    cursor: pointer;
+    position: absolute;
+    z-index: 100 !important;
+    background: #d9d9d9;
+    box-shadow: 0 2px 2px var(--color-secondary);
+    height: 18px;
+    width: 18px;
+    border-radius: 100%;
+    opacity: 1;
+
+    &:global(.active) {
+      border: none;
+      opacity: 1;
+    }
+  }
+
+  &_icon {
+    cursor: pointer;
+    z-index: 10;
+
+    &:hover {
+      svg {
+        stroke: var(--color-main);
+      }
+    }
+  }
+}

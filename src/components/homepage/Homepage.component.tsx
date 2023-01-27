@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import useAppContextManager from '../../hooks/useAppContextManager';
+import AtmospheresEffects from '../atmospheres/AtmospheresEffects.component';
 import Button, { Icons } from '../buttons/Button.component';
 import Logo from '../logo/Logo.component';
 import PlayerPage from '../playerPage/PlayerPage.component';
@@ -60,6 +61,7 @@ const Homepage: React.FC = () => {
             ))}
           </div>
         </div>
+
         <div className={styles.Homepage_optionBlock}>
           <div>{t(t('homepage.chooseAmbientSound'))}</div>
           <div className={styles.Homepage_optionsBlockButtons}>
@@ -91,6 +93,7 @@ const Homepage: React.FC = () => {
           />
         </div>
       </div>
+      <AtmospheresEffects />
     </div>
   );
 };

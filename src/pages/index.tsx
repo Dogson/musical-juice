@@ -4,6 +4,7 @@ import i18n from 'i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import React, { useState } from 'react';
 import { I18nextProvider, initReactI18next } from 'react-i18next';
+import { AudioPlayerProvider } from 'react-use-audio-player';
 
 import HomeContainer from '../containers/HomeContainer';
 import { AppProvider } from '../context/app-context/AppContext';
@@ -44,35 +45,43 @@ const IndexPage: React.FC = () => {
   const [currentAtmosphere, setCurrentAtmosphere] = useState<string>();
   const [atmospherePaused, setAtmospherePaused] = useState<boolean>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [musicVolume, setMusicVolume] = useState(1);
+  const [soundVolume, setSoundVolume] = useState(0.2);
 
   return (
     <I18nextProvider i18n={i18n}>
-      <AppProvider
-        value={{
-          mixIdx,
-          setMixIdx,
-          mixes,
-          currentMix,
-          setMixes,
-          setCurrentMix,
-          mixPlaylist,
-          setMixPlaylist,
-          moods,
-          currentMood,
-          setMoods,
-          setCurrentMood,
-          atmospheres,
-          currentAtmosphere,
-          setAtmospheres,
-          setCurrentAtmosphere,
-          atmospherePaused,
-          setAtmospherePaused,
-          isLoading,
-          setIsLoading,
-        }}
-      >
-        <HomeContainer />
-      </AppProvider>
+      <AudioPlayerProvider>
+        <AppProvider
+          value={{
+            mixIdx,
+            setMixIdx,
+            mixes,
+            currentMix,
+            setMixes,
+            setCurrentMix,
+            mixPlaylist,
+            setMixPlaylist,
+            moods,
+            currentMood,
+            setMoods,
+            setCurrentMood,
+            atmospheres,
+            currentAtmosphere,
+            setAtmospheres,
+            setCurrentAtmosphere,
+            atmospherePaused,
+            setAtmospherePaused,
+            isLoading,
+            setIsLoading,
+            musicVolume,
+            setMusicVolume,
+            soundVolume,
+            setSoundVolume,
+          }}
+        >
+          <HomeContainer />
+        </AppProvider>
+      </AudioPlayerProvider>
     </I18nextProvider>
   );
 };

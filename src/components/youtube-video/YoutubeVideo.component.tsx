@@ -24,6 +24,7 @@ const YoutubeVideo: React.FC = () => {
     mixes,
     currentMood,
   } = useAppContextManager();
+  const { musicVolume } = useContext(AppContext);
   const { setAtmospherePaused, setIsLoading } = useContext(AppContext);
   const [playStaticSound, { stop: stopStaticSound }] = useSound(staticSound, {
     volume: 0.1,
@@ -87,6 +88,12 @@ const YoutubeVideo: React.FC = () => {
     },
     [],
   );
+
+  useEffect(() => {
+    if (player) {
+      player.setVolume(musicVolume * 100);
+    }
+  }, [musicVolume, player]);
 
   useEffect(() => {
     if (videoLoaded) {
@@ -257,14 +264,17 @@ const YoutubeVideo: React.FC = () => {
                 {currentMix?.title}
               </h1>
             </div>
-            <Button
-              onClick={addOrRemoveCurrentMixToFavs}
-              active={
-                currentMix && mixes.find((mix) => mix.id === currentMix.id)?.fav
-              }
-              icon={Icons.Favorite}
-              size="smaller"
-            />
+            <div className="animate__animated animate__fadeInUp">
+              <Button
+                onClick={addOrRemoveCurrentMixToFavs}
+                active={
+                  currentMix &&
+                  mixes.find((mix) => mix.id === currentMix.id)?.fav
+                }
+                icon={Icons.Favorite}
+                size="smaller"
+              />
+            </div>
           </div>
 
           <div className={styles.YoutubeVideo_bottomInfos}>
