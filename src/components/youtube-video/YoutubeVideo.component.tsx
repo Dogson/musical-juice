@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import YouTube from 'react-youtube';
 import useSound from 'use-sound';
@@ -54,6 +54,7 @@ const YoutubeVideo: React.FC = () => {
   const timeoutRef = useRef<number>();
   const [videoPaused, setVideoPaused] = useState<boolean>();
   const [manualInterval, setManualInterval] = useState(0);
+  const [backgroundVideoLoaded, setBackgroundVideoLoaded] = useState(false);
   const checkTrackNameInterval = useRef<number | null>(null);
   const eWindow: IWindow = window as unknown as IWindow;
   const { t } = useTranslation();
@@ -66,6 +67,11 @@ const YoutubeVideo: React.FC = () => {
     e.target.seekTo(track?.start || 0, true);
     e.target.playVideo();
   };
+
+  const allLoaded = useMemo(
+    () => videoLoaded && backgroundVideoLoaded,
+    [backgroundVideoLoaded, videoLoaded],
+  );
 
   /**
    * timeout if mix is not charged
@@ -192,23 +198,26 @@ const YoutubeVideo: React.FC = () => {
   }, [player, manualInterval]);
 
   useEffect(() => {
-    if (!videoLoaded) {
+    if (!allLoaded || !player) {
       setAtmospherePaused(true);
       playStaticSound();
       setIsLoading(true);
     } else {
+      initTvShader(styles.YoutubeVideo_videoContainer, currentMix?.gif);
       stopStaticSound();
       setAtmospherePaused(false);
-      initTvShader(styles.YoutubeVideo_videoContainer, currentMix?.gif);
       setIsLoading(false);
+      player.playVideo();
     }
   }, [
+    allLoaded,
     currentMix?.gif,
     playStaticSound,
+    player,
     setAtmospherePaused,
     setIsLoading,
     stopStaticSound,
-    videoLoaded,
+    track?.start,
   ]);
 
   useEffect(() => {
@@ -237,7 +246,7 @@ const YoutubeVideo: React.FC = () => {
     () => () => {
       stopStaticSound();
     },
-    [currentMix, stopStaticSound, videoLoaded],
+    [currentMix, stopStaticSound, allLoaded],
   );
   /**
    * Preloading video + showing static when changing mix
@@ -245,11 +254,21 @@ const YoutubeVideo: React.FC = () => {
   useEffect(() => {
     setAtmospherePaused(undefined);
     setVideoLoaded(false);
+    setBackgroundVideoLoaded(false);
   }, [currentMix, setAtmospherePaused]);
 
   return (
     <div className={styles.YoutubeVideo}>
-      {videoLoaded && (
+      {currentMix && (
+        <video
+          id="background-video"
+          src={currentMix?.gif}
+          onLoadedData={() => {
+            setBackgroundVideoLoaded(true);
+          }}
+        />
+      )}
+      {allLoaded && (
         <div className={styles.YoutubeVideo_interactiveLayer} role="button">
           <div className={styles.YoutubeVideo_topInfos}>
             <h3 className="animate__animated animate__fadeInDown">
@@ -345,20 +364,17 @@ const YoutubeVideo: React.FC = () => {
                 }
               />
             </div>
-            <div
-              className={classNames('animate__animated', 'animate__fadeInUp')}
-            >
-              <Button
-                onClick={nextMix}
-                icon={Icons.Shuffle}
-                label={
-                  <div className={styles.YoutubeVideo_nextMixBtn}>
-                    {t('player.changeMix', { mood: currentMood })}
-                  </div>
-                }
-                noBackground
-              />
-            </div>
+
+            <Button
+              onClick={nextMix}
+              icon={Icons.Shuffle}
+              label={
+                <div className={styles.YoutubeVideo_nextMixBtn}>
+                  {t('player.changeMix', { mood: currentMood })}
+                </div>
+              }
+              noBackground
+            />
           </div>
         </div>
       )}

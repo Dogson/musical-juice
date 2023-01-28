@@ -4,6 +4,11 @@
   width: 100%;
   height: 100%;
 
+  video {
+    z-index: -2;
+    display: none;
+  }
+
   &:before {
     box-shadow: inset 0 110px 2000px black, inset 0 -110px 2000px black;
     content: '';
@@ -156,14 +161,14 @@
 
 @media (max-width: 700px) {
   .YoutubeVideo {
-    &_nextMixBtn {
-      right: unset;
-      bottom: unset;
-      position: relative;
+    &_topInfos {
+      h1 {
+        font-size: var(--size-small);
+      }
     }
 
     &_bottomInfos {
-      margin-bottom: 20px;
+      margin-bottom: 70px;
     }
   }
 }
