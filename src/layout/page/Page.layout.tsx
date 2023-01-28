@@ -13,7 +13,7 @@ const PageLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
   useEffect(() => {
     if (isLoading) {
-      initTvShader(styles.PageLayout, 'assets/black-screen.mp4', true);
+      initTvShader(styles.PageLayout, 'assets/black-screen.mp4', true, true);
     }
   }, [isLoading]);
 

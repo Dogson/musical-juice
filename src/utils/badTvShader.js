@@ -26,7 +26,12 @@ let plane;
 let composer;
 let animateHandle;
 
-const initTvShader = (containerClassName, backgroundVideo, staticOnly) => {
+const initTvShader = (
+  containerClassName,
+  backgroundVideo,
+  staticOnly,
+  blackScreen,
+) => {
   const isBrowser = typeof window !== 'undefined';
 
   if (!isBrowser) return;
@@ -42,16 +47,22 @@ const initTvShader = (containerClassName, backgroundVideo, staticOnly) => {
     if (animateHandle) {
       cancelAnimationFrame(animateHandle);
     }
+
+    window.removeEventListener('pauseVideo', window.onPause);
+    window.removeEventListener('playVideo', window.onPlay);
+    window.removeEventListener('skipStart', window.onSkipStart);
+    window.removeEventListener('skipEnd', window.onSkipEnd);
   };
   removeShaders();
 
   let shaderTime = 0;
   const videoContainer = document.getElementsByClassName(containerClassName)[0];
-  let video = document.createElement('video');
+  let video = blackScreen
+    ? document.createElement('video')
+    : document.getElementById('background-video');
   video.loop = true;
   video.muted = true;
   if (backgroundVideo) {
-    video.src = backgroundVideo;
     video.play();
   }
   // init video texture
