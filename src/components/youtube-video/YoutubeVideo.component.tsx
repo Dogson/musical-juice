@@ -64,8 +64,7 @@ const YoutubeVideo: React.FC = () => {
    */
   const handleReady = (e: YT.PlayerEvent) => {
     setPlayer(e.target);
-    e.target.seekTo(track?.start || 0, true);
-    e.target.playVideo();
+    setVideoLoaded(true);
   };
 
   const allLoaded = useMemo(
@@ -124,8 +123,6 @@ const YoutubeVideo: React.FC = () => {
     }
     if (videoPaused !== undefined) {
       window.dispatchEvent(eWindow.playVideo);
-    } else {
-      setVideoLoaded(true);
     }
   };
 
@@ -198,7 +195,7 @@ const YoutubeVideo: React.FC = () => {
   }, [player, manualInterval]);
 
   useEffect(() => {
-    if (!allLoaded) {
+    if (!allLoaded || !player) {
       setAtmospherePaused(true);
       playStaticSound();
       setIsLoading(true);
@@ -207,14 +204,18 @@ const YoutubeVideo: React.FC = () => {
       stopStaticSound();
       setAtmospherePaused(false);
       setIsLoading(false);
+      player.seekTo(track?.start || 0, true);
+      player.playVideo();
     }
   }, [
     allLoaded,
     currentMix?.gif,
     playStaticSound,
+    player,
     setAtmospherePaused,
     setIsLoading,
     stopStaticSound,
+    track?.start,
   ]);
 
   useEffect(() => {
