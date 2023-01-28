@@ -64,6 +64,8 @@ const YoutubeVideo: React.FC = () => {
    */
   const handleReady = (e: YT.PlayerEvent) => {
     setPlayer(e.target);
+    e.target.seekTo(track?.start || 0, true);
+    e.target.pauseVideo();
     setVideoLoaded(true);
   };
 
@@ -204,7 +206,6 @@ const YoutubeVideo: React.FC = () => {
       stopStaticSound();
       setAtmospherePaused(false);
       setIsLoading(false);
-      player.seekTo(track?.start || 0, true);
       player.playVideo();
     }
   }, [

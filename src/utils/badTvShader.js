@@ -47,6 +47,11 @@ const initTvShader = (
     if (animateHandle) {
       cancelAnimationFrame(animateHandle);
     }
+
+    window.removeEventListener('pauseVideo', window.onPause);
+    window.removeEventListener('playVideo', window.onPlay);
+    window.removeEventListener('skipStart', window.onSkipStart);
+    window.removeEventListener('skipEnd', window.onSkipEnd);
   };
   removeShaders();
 
