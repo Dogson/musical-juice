@@ -139,29 +139,47 @@
   }
 }
 
-@media (hover: none) {
-  .Button {
-    &:hover {
-      background: var(--color-secondary);
-      color: var(--color-secondary);
-      @include text-stroke(var(--color-main));
+//@media (hover: none) {
+//  .Button {
+//    &:hover {
+//      background: var(--color-secondary);
+//      color: var(--color-secondary);
+//      @include text-stroke(var(--color-main));
+//
+//      svg {
+//        fill: none;
+//        stroke: var(--color-main);
+//      }
+//    }
+//
+//    &__active {
+//      box-shadow: unset !important;
+//      background: var(--color-main) !important;
+//      text-shadow: none !important;
+//      color: var(--color-secondary) !important;
+//
+//      svg {
+//        stroke: var(--color-secondary) !important;
+//        fill: var(--color-secondary) !important;
+//      }
+//    }
+//  }
+//}
 
-      svg {
-        fill: none;
-        stroke: var(--color-main);
-      }
+@media (max-width: 700px) {
+  .Button {
+    font-size: var(--size-smaller);
+    min-width: 80px;
+    height: 50px;
+
+    &__small {
+      min-width: 60px;
+      height: 40px;
     }
 
-    &__active {
-      box-shadow: unset !important;
-      background: var(--color-main) !important;
-      text-shadow: none !important;
-      color: var(--color-secondary) !important;
-
-      svg {
-        stroke: var(--color-secondary) !important;
-        fill: var(--color-secondary) !important;
-      }
+    &__smaller {
+      min-width: 60px;
+      height: 40px;
     }
   }
 }

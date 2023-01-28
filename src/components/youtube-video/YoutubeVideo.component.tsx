@@ -65,8 +65,7 @@ const YoutubeVideo: React.FC = () => {
   const handleReady = (e: YT.PlayerEvent) => {
     setPlayer(e.target);
     e.target.seekTo(track?.start || 0, true);
-    e.target.pauseVideo();
-    setVideoLoaded(true);
+    e.target.playVideo();
   };
 
   const allLoaded = useMemo(
@@ -125,6 +124,8 @@ const YoutubeVideo: React.FC = () => {
     }
     if (videoPaused !== undefined) {
       window.dispatchEvent(eWindow.playVideo);
+    } else {
+      setVideoLoaded(true);
     }
   };
 
@@ -363,20 +364,17 @@ const YoutubeVideo: React.FC = () => {
                 }
               />
             </div>
-            <div
-              className={classNames('animate__animated', 'animate__fadeInUp')}
-            >
-              <Button
-                onClick={nextMix}
-                icon={Icons.Shuffle}
-                label={
-                  <div className={styles.YoutubeVideo_nextMixBtn}>
-                    {t('player.changeMix', { mood: currentMood })}
-                  </div>
-                }
-                noBackground
-              />
-            </div>
+
+            <Button
+              onClick={nextMix}
+              icon={Icons.Shuffle}
+              label={
+                <div className={styles.YoutubeVideo_nextMixBtn}>
+                  {t('player.changeMix', { mood: currentMood })}
+                </div>
+              }
+              noBackground
+            />
           </div>
         </div>
       )}

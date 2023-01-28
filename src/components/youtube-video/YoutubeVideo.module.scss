@@ -161,10 +161,10 @@
 
 @media (max-width: 700px) {
   .YoutubeVideo {
-    &_nextMixBtn {
-      right: unset;
-      bottom: unset;
-      position: relative;
+    &_topInfos {
+      h1 {
+        font-size: var(--size-small);
+      }
     }
 
     &_bottomInfos {
