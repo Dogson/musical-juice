@@ -45,6 +45,7 @@
   &_blockLabel {
     font-size: var(--size-bigger);
     text-align: center;
+    margin-bottom: 10px;
   }
 
   &_row {
@@ -58,13 +59,11 @@
   }
 
   &_buttons {
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
     justify-content: space-between;
     flex-wrap: wrap;
-
-    button {
-      margin-top: 17px;
-    }
   }
 
   &_moodFavBtn {

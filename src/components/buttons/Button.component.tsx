@@ -4,8 +4,10 @@ import useSound from 'use-sound';
 
 import buttonPressSound from '../../assets/button-press.mp3';
 import BackwardIcon from '../icons/BackwardIcon.component';
+import DrivingIcon from '../icons/DrivingIcon.component';
 import FavoriteIcon from '../icons/FavoriteIcon.component';
 import FireplaceIcon from '../icons/FireplaceIcon.component';
+import FireworksIcon from '../icons/FireworksIcon.component';
 import ForwardIcon from '../icons/ForwardIcon.component';
 import NatureIcon from '../icons/NatureIcon.component';
 import PauseIcon from '../icons/PauseIcon.component';
@@ -25,6 +27,8 @@ export const enum Icons {
   Rain = 'rain',
   Fireplace = 'fireplace',
   Nature = 'nature',
+  Driving = 'driving',
+  Fireworks = 'fireworks',
 }
 
 const Button: React.FC<{
@@ -78,10 +82,20 @@ const Button: React.FC<{
         return <FavoriteIcon />;
       case Icons.Rain:
         return <RainIcon />;
+      case Icons.Fireworks:
+        return (
+          <FireworksIcon
+          // color={
+          //   active || hover ? 'var(--color-secondary)' : 'var(--color-main)'
+          // }
+          />
+        );
       case Icons.Nature:
         return <NatureIcon />;
       case Icons.Fireplace:
         return <FireplaceIcon />;
+      case Icons.Driving:
+        return <DrivingIcon />;
       default:
         return null;
     }

@@ -1,26 +1,18 @@
-import { Fireworks } from 'fireworks-js/dist/react';
-import React, { useContext } from 'react';
+import React from 'react';
 
-import AppContext from '../../context/app-context/AppContext';
+import fireworksVideo from './assets/fireworksVideo.mp4';
+import * as styles from './Atmospheres.module.scss';
 
-const FireworksEffect: React.FC = () => {
-  const { atmospherePaused } = useContext(AppContext);
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  return (
-    <Fireworks
-      enabled={!atmospherePaused}
-      style={{ width: '100%', height: '100%' }}
-      options={{
-        speed: 0.05,
-        rocketsPoint: 5,
-        delay: {
-          min: 20,
-          max: 40,
-        },
-      }}
+const FireworksEffect: React.FC = () => (
+  <div className={styles.Atmospheres_fireworks}>
+    <video
+      autoPlay
+      loop
+      muted
+      className={styles.Atmospheres_video}
+      src={fireworksVideo}
     />
-  );
-};
+  </div>
+);
 
 export default FireworksEffect;

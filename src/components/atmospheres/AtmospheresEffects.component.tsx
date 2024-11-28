@@ -4,11 +4,15 @@ import { useAudioPlayer } from 'react-use-audio-player';
 
 import AppContext from '../../context/app-context/AppContext';
 import useAppContextManager from '../../hooks/useAppContextManager';
+import drivingSound from './assets/driving.mp3';
 import fireplaceSound from './assets/fireplace.mp3';
+import fireworksSound from './assets/fireworks.mp3';
 import natureSound from './assets/nature.mp3';
 import rainSound from './assets/rain.mp3';
 import * as styles from './Atmospheres.module.scss';
+import DrivingEffect from './Driving.component';
 import FireEffect from './Fire.component';
+import FireworksEffect from './Fireworks.component';
 import NatureEffect from './Nature.component';
 import RainEffect from './Rain.component';
 
@@ -24,8 +28,23 @@ const Atmospheres: React.FC = () => {
         return fireplaceSound;
       case 'nature':
         return natureSound;
+      case 'driving':
+        return drivingSound;
+      case 'fireworks':
+        return fireworksSound;
       default:
         return '';
+    }
+  }, [currentAtmosphere]);
+
+  const volumeMultiplier = useMemo(() => {
+    switch (currentAtmosphere) {
+      case 'driving':
+        return 3;
+      case 'rain':
+        return 10;
+      default:
+        return 1;
     }
   }, [currentAtmosphere]);
 
@@ -45,14 +64,18 @@ const Atmospheres: React.FC = () => {
         return <NatureEffect />;
       case 'rain':
         return <RainEffect />;
+      case 'driving':
+        return <DrivingEffect />;
+      case 'fireworks':
+        return <FireworksEffect />;
       default:
         return undefined;
     }
   }, [currentAtmosphere]);
 
   useEffect(() => {
-    volume(soundVolume);
-  }, [currentAtmosphere, soundVolume, volume]);
+    volume(soundVolume * volumeMultiplier);
+  }, [currentAtmosphere, soundVolume, volume, volumeMultiplier]);
 
   useEffect(() => {
     stop();
