@@ -18,10 +18,38 @@
   &_fireworks,
   &_rain,
   &_nature,
+  &_driving,
   &_fire {
     width: 100%;
     height: 100%;
     overflow: hidden;
+  }
+
+  &_video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  &_driving {
+    opacity: 0.3;
+  }
+
+  &_rain {
+    opacity: 0.15;
+  }
+
+  &_fire {
+    opacity: 0.3;
+  }
+
+  &_fireworks {
+    opacity: 0.3;
+  }
+
+  &_nature {
+    opacity: 0.15;
   }
 }
 
