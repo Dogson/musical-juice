@@ -262,6 +262,7 @@ const YoutubeVideo: React.FC = () => {
       {currentMix && (
         <video
           id="background-video"
+          muted
           src={currentMix?.gif}
           onLoadedData={() => {
             setBackgroundVideoLoaded(true);
